@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>接力送 · 月度UE模型 V5</title>
+<style>
+  :root {
+    --red: #e74c3c; --red-bg: #fadbd8;
+    --yellow: #f39c12; --yellow-bg: #fef9e7;
+    --green: #27ae60; --green-bg: #d5f5e3;
+    --text: #2c3e50; --light: #7f8c8d; --border: #e0e0e0; --bg: #fafafa;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif;
+    color: var(--text); background: #fff; max-width: 1300px; margin: 0 auto;
+    padding: 36px 44px; line-height: 1.65; }
+  h1 { font-size: 1.9rem; font-weight: 800; margin-bottom: 4px; }
+  h1 .sub { font-size: 0.82rem; color: var(--light); font-weight: 400; margin-left: 10px; }
+  h2 { font-size: 1.18rem; font-weight: 700; margin: 40px 0 14px; }
+  hr { border: none; border-top: 2px solid #eee; margin: 20px 0 24px; }
+
+  .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; margin: 22px 0; }
+  .kpi { background: var(--bg); border-radius: 10px; padding: 18px 16px; border-left: 4px solid #3498db; text-align: center; }
+  .kpi.g { border-left-color: var(--green); } .kpi.r { border-left-color: var(--red); }
+  .kpi .v { font-size: 1.5rem; font-weight: 800; margin-bottom: 3px; }
+  .kpi .l { font-size: 0.8rem; color: var(--light); }
+
+  .table-wrap { overflow-x: auto; margin: 16px 0; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.83rem; }
+  thead th { background: #2c3e50; color: #fff; padding: 9px 6px; font-weight: 600; text-align: center; white-space: nowrap; }
+  tbody td { padding: 6px 6px; text-align: right; border-bottom: 1px solid var(--border); }
+  tbody td:first-child, tbody td:nth-child(2), tbody td:nth-child(4) { text-align: center; }
+  tr:hover { filter: brightness(0.95); }
+  tr.lose td { background: var(--red-bg) !important; }
+  tr.thin td { background: var(--yellow-bg) !important; }
+  tr.good td { background: var(--green-bg) !important; }
+
+  .legend { display: flex; gap: 18px; margin: 12px 0; font-size: 0.82rem; }
+  .legend span { display: inline-block; width: 15px; height: 15px; border-radius: 3px; margin-right: 5px; vertical-align: -3px; }
+  .lr { background: var(--red-bg); border: 1px solid var(--red); }
+  .ly { background: var(--yellow-bg); border: 1px solid var(--yellow); }
+  .lg { background: var(--green-bg); border: 1px solid var(--green); }
+
+  .dual { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .formula { background: #f0f4f8; border-radius: 8px; padding: 16px 20px; margin: 16px 0; }
+  .note { border-radius: 8px; padding: 14px 18px; margin: 16px 0; font-size: 0.88rem; }
+  .note.info { background: #eaf7ea; border-left: 4px solid var(--green); }
+  .note.warn { background: #fff3cd; border-left: 4px solid var(--yellow); }
+  .footer { margin-top: 50px; padding-top: 16px; border-top: 2px solid #eee; color: var(--light); font-size: 0.76rem; }
+</style>
+</head>
+<body>
+
+<h1>🚀 接力送 · 月度UE模型
+  <span class="sub">V5 · 2026-06-13 · 结算固定¥2.50 · 0.5元美团补贴长期有效</span>
+</h1>
+
+<hr>
+
+<div class="formula">
+  <strong>收入结构：</strong><br>
+  结算价 = <strong>¥2.50/单（固定）</strong> = 骑手付费 + 美团每单补贴¥0.50（长期）<br>
+  &nbsp;&nbsp;推广期（前两周）：骑手付 ¥1.00 → 美团补 ¥1.50 → 我们得 ¥2.50<br>
+  &nbsp;&nbsp;常规期（两周后）：骑手付 ¥2.00 → 美团补 ¥0.50 → 我们得 ¥2.50<br><br>
+  <strong>单量差异仅来自骑手费率弹性：</strong><br>
+  &nbsp;&nbsp;¥1.00 费率 → 骑手剩余¥2.0（67%） → 95% 基准量<br>
+  &nbsp;&nbsp;¥2.00 费率 → 骑手剩余¥1.0（33%） → 25% 基准量
+</div>
+
+<div class="note warn">
+  <strong>关键变量：人头补贴 (T−1)×¥80/天 在常规期是否保留？</strong> 下方分别展示两个情景。
+</div>
+
+<!-- ═══════ 情景1：有人头补贴 ═══════ -->
+<h2>📋 情景A：常规期 <strong>保留</strong> 人头补贴（骑手付¥2 + 我们得¥2.5 + 人头补贴）</h2>
+<div class="dual">
+  <div>
+    <h3 style="font-size:0.95rem;color:var(--green);margin-bottom:6px;">推广期（骑手付¥1 · 有人头补贴）</h3>
+    <div class="table-wrap"><table>
+    <thead><tr><th>基准单量</th><th>实际单量</th><th>配置</th><th>人数</th><th>月毛利</th><th>毛利率</th></tr></thead><tbody>
+<tr class="row-loss"><td>40</td><td>34</td><td>1锚+1峰×2.0h</td><td>2</td><td style="font-weight:700;color:#e74c3c">-¥2,050</td><td style="color:#e74c3c">-80.4%</td></tr><tr class="row-thin"><td>50</td><td>43</td><td>1锚+1峰×2.5h</td><td>2</td><td style="font-weight:700;color:#f39c12">¥+575</td><td style="color:#f39c12">+10.2%</td></tr><tr class="row-thin"><td>60</td><td>52</td><td>1锚+1峰×3.0h</td><td>2</td><td style="font-weight:700;color:#f39c12">¥+800</td><td style="color:#f39c12">+12.7%</td></tr><tr class="row-good"><td>80</td><td>69</td><td>1锚+2峰×2.5h</td><td>3</td><td style="font-weight:700;color:#27ae60">¥+2,675</td><td style="color:#27ae60">+26.8%</td></tr><tr class="row-good"><td>100</td><td>86</td><td>1锚+3峰×2.5h</td><td>4</td><td style="font-weight:700;color:#27ae60">¥+4,100</td><td style="color:#27ae60">+30.0%</td></tr><tr class="row-good"><td>120</td><td>104</td><td>1锚+4峰×2.5h</td><td>5</td><td style="font-weight:700;color:#27ae60">¥+5,600</td><td style="color:#27ae60">+32.2%</td></tr><tr class="row-good"><td>150</td><td>130</td><td>1锚+5峰×2.5h</td><td>6</td><td style="font-weight:700;color:#27ae60">¥+7,700</td><td style="color:#27ae60">+35.4%</td></tr><tr class="row-good"><td>200</td><td>173</td><td>1锚+7峰×2.5h</td><td>8</td><td style="font-weight:700;color:#27ae60">¥+11,225</td><td style="color:#27ae60">+37.7%</td></tr><tr class="row-good"><td>250</td><td>216</td><td>1锚+9峰×2.5h</td><td>10</td><td style="font-weight:700;color:#27ae60">¥+14,750</td><td style="color:#27ae60">+39.0%</td></tr><tr class="row-good"><td>300</td><td>260</td><td>1锚+12峰×2.0h</td><td>13</td><td style="font-weight:700;color:#27ae60">¥+23,900</td><td style="color:#27ae60">+49.5%</td></tr><tr class="row-good"><td>400</td><td>346</td><td>1锚+16峰×2.5h</td><td>17</td><td style="font-weight:700;color:#27ae60">¥+25,550</td><td style="color:#27ae60">+39.7%</td></tr><tr class="row-good"><td>500</td><td>433</td><td>1锚+20峰×2.5h</td><td>21</td><td style="font-weight:700;color:#27ae60">¥+32,675</td><td style="color:#27ae60">+40.6%</td></tr></tbody></table></div></div><div><h3 style="font-size:0.95rem;color:var(--red);margin-bottom:6px;">常规期（骑手付¥2 · 有人头补贴）</h3><div class="table-wrap"><table>
+    <thead><tr><th>基准单量</th><th>实际单量</th><th>配置</th><th>人数</th><th>月毛利</th><th>毛利率</th></tr></thead><tbody><tr class="row-loss"><td>40</td><td>10</td><td>1锚+1峰×2.0h</td><td>2</td><td style="font-weight:700;color:#e74c3c">-¥3,850</td><td style="color:#e74c3c">-513.3%</td></tr><tr class="row-loss"><td>50</td><td>12</td><td>1锚+1峰×2.0h</td><td>2</td><td style="font-weight:700;color:#e74c3c">-¥3,700</td><td style="color:#e74c3c">-411.1%</td></tr><tr class="row-loss"><td>60</td><td>15</td><td>1锚+1峰×2.0h</td><td>2</td><td style="font-weight:700;color:#e74c3c">-¥3,475</td><td style="color:#e74c3c">-308.9%</td></tr><tr class="row-loss"><td>80</td><td>20</td><td>1锚+1峰×2.0h</td><td>2</td><td style="font-weight:700;color:#e74c3c">-¥3,100</td><td style="color:#e74c3c">-206.7%</td></tr><tr class="row-loss"><td>100</td><td>25</td><td>1锚+1峰×2.0h</td><td>2</td><td style="font-weight:700;color:#e74c3c">-¥2,725</td><td style="color:#e74c3c">-145.3%</td></tr><tr class="row-loss"><td>120</td><td>30</td><td>1锚+1峰×2.0h</td><td>2</td><td style="font-weight:700;color:#e74c3c">-¥2,350</td><td style="color:#e74c3c">-104.4%</td></tr><tr class="row-loss"><td>150</td><td>37</td><td>1锚+1峰×2.0h</td><td>2</td><td style="font-weight:700;color:#e74c3c">-¥1,825</td><td style="color:#e74c3c">-65.8%</td></tr><tr class="row-thin"><td>200</td><td>50</td><td>1锚+1峰×3.0h</td><td>2</td><td style="font-weight:700;color:#f39c12">¥+650</td><td style="color:#f39c12">+10.6%</td></tr><tr class="row-good"><td>250</td><td>62</td><td>1锚+2峰×2.5h</td><td>3</td><td style="font-weight:700;color:#27ae60">¥+2,150</td><td style="color:#27ae60">+22.8%</td></tr><tr class="row-good"><td>300</td><td>75</td><td>1锚+2峰×3.0h</td><td>3</td><td style="font-weight:700;color:#27ae60">¥+2,225</td><td style="color:#27ae60">+21.3%</td></tr><tr class="row-good"><td>400</td><td>100</td><td>1锚+4峰×2.0h</td><td>5</td><td style="font-weight:700;color:#27ae60">¥+7,100</td><td style="color:#27ae60">+41.5%</td></tr><tr class="row-good"><td>500</td><td>125</td><td>1锚+5峰×2.5h</td><td>6</td><td style="font-weight:700;color:#27ae60">¥+7,325</td><td style="color:#27ae60">+34.3%</td></tr></tbody></table></div></div></div>
+<h2>📋 情景B：常规期 <strong>取消</strong> 人头补贴（骑手付¥2 + 我们得¥2.5 + 无人头补贴）</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>基准单量</th><th>实际单量</th><th>配置</th><th>人数</th><th>月订单收入</th><th>月人头补贴</th><th>月总收入</th><th>月总成本</th><th>月毛利</th><th>毛利率</th><th>单均毛利</th></tr></thead><tbody>
+<tr class="row-loss"><td>40</td><td>10</td><td>1锚+1峰×2.0h</td><td>2</td>
+<td>¥+750</td><td>¥+0</td><td>¥+750</td>
+<td>¥+4,600</td><td style="font-weight:700;color:#e74c3c">-¥3,850</td>
+<td style="color:#e74c3c">-513.3%</td><td>-12.83</td></tr><tr class="row-loss"><td>50</td><td>12</td><td>1锚+1峰×2.0h</td><td>2</td>
+<td>¥+900</td><td>¥+0</td><td>¥+900</td>
+<td>¥+4,600</td><td style="font-weight:700;color:#e74c3c">-¥3,700</td>
+<td style="color:#e74c3c">-411.1%</td><td>-10.28</td></tr><tr class="row-loss"><td>60</td><td>15</td><td>1锚+1峰×2.0h</td><td>2</td>
+<td>¥+1,125</td><td>¥+0</td><td>¥+1,125</td>
+<td>¥+4,600</td><td style="font-weight:700;color:#e74c3c">-¥3,475</td>
+<td style="color:#e74c3c">-308.9%</td><td>-7.72</td></tr><tr class="row-loss"><td>80</td><td>20</td><td>1锚+1峰×2.0h</td><td>2</td>
+<td>¥+1,500</td><td>¥+0</td><td>¥+1,500</td>
+<td>¥+4,600</td><td style="font-weight:700;color:#e74c3c">-¥3,100</td>
+<td style="color:#e74c3c">-206.7%</td><td>-5.17</td></tr><tr class="row-loss"><td>100</td><td>25</td><td>1锚+1峰×2.0h</td><td>2</td>
+<td>¥+1,875</td><td>¥+0</td><td>¥+1,875</td>
+<td>¥+4,600</td><td style="font-weight:700;color:#e74c3c">-¥2,725</td>
+<td style="color:#e74c3c">-145.3%</td><td>-3.63</td></tr><tr class="row-loss"><td>120</td><td>30</td><td>1锚+1峰×2.0h</td><td>2</td>
+<td>¥+2,250</td><td>¥+0</td><td>¥+2,250</td>
+<td>¥+4,600</td><td style="font-weight:700;color:#e74c3c">-¥2,350</td>
+<td style="color:#e74c3c">-104.4%</td><td>-2.61</td></tr><tr class="row-loss"><td>150</td><td>37</td><td>1锚+1峰×2.0h</td><td>2</td>
+<td>¥+2,775</td><td>¥+0</td><td>¥+2,775</td>
+<td>¥+4,600</td><td style="font-weight:700;color:#e74c3c">-¥1,825</td>
+<td style="color:#e74c3c">-65.8%</td><td>-1.64</td></tr><tr class="row-loss"><td>200</td><td>50</td><td>1锚+1峰×3.0h</td><td>2</td>
+<td>¥+3,750</td><td>¥+0</td><td>¥+3,750</td>
+<td>¥+5,500</td><td style="font-weight:700;color:#e74c3c">-¥1,750</td>
+<td style="color:#e74c3c">-46.7%</td><td>-1.17</td></tr><tr class="row-loss"><td>250</td><td>62</td><td>1锚+2峰×2.5h</td><td>3</td>
+<td>¥+4,650</td><td>¥+0</td><td>¥+4,650</td>
+<td>¥+7,300</td><td style="font-weight:700;color:#e74c3c">-¥2,650</td>
+<td style="color:#e74c3c">-57.0%</td><td>-1.42</td></tr><tr class="row-loss"><td>300</td><td>75</td><td>1锚+2峰×3.0h</td><td>3</td>
+<td>¥+5,625</td><td>¥+0</td><td>¥+5,625</td>
+<td>¥+8,200</td><td style="font-weight:700;color:#e74c3c">-¥2,575</td>
+<td style="color:#e74c3c">-45.8%</td><td>-1.14</td></tr><tr class="row-loss"><td>400</td><td>100</td><td>1锚+4峰×2.0h</td><td>5</td>
+<td>¥+7,500</td><td>¥+0</td><td>¥+7,500</td>
+<td>¥+10,000</td><td style="font-weight:700;color:#e74c3c">-¥2,500</td>
+<td style="color:#e74c3c">-33.3%</td><td>-0.83</td></tr><tr class="row-loss"><td>500</td><td>125</td><td>1锚+4峰×3.0h</td><td>5</td>
+<td>¥+9,375</td><td>¥+0</td><td>¥+9,375</td>
+<td>¥+13,600</td><td style="font-weight:700;color:#e74c3c">-¥4,225</td>
+<td style="color:#e74c3c">-45.1%</td><td>-1.13</td></tr></tbody></table></div>
+<h2>🔍 情景对比</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>基准单量</th><th>推广期月利</th><th>常规期月利(有人头补贴)</th><th>常规期月利(无人头补贴)</th><th>人头补贴贡献</th></tr></thead><tbody>
+<tr class="row-loss"><td>40</td><td>-¥2,050</td><td style="font-weight:700">-¥3,850</td><td>-¥3,850</td><td style="color:var(--green)">¥+0</td></tr><tr class="row-loss"><td>50</td><td>¥+575</td><td style="font-weight:700">-¥3,700</td><td>-¥3,700</td><td style="color:var(--green)">¥+0</td></tr><tr class="row-loss"><td>60</td><td>¥+800</td><td style="font-weight:700">-¥3,475</td><td>-¥3,475</td><td style="color:var(--green)">¥+0</td></tr><tr class="row-loss"><td>80</td><td>¥+2,675</td><td style="font-weight:700">-¥3,100</td><td>-¥3,100</td><td style="color:var(--green)">¥+0</td></tr><tr class="row-loss"><td>100</td><td>¥+4,100</td><td style="font-weight:700">-¥2,725</td><td>-¥2,725</td><td style="color:var(--green)">¥+0</td></tr><tr class="row-loss"><td>120</td><td>¥+5,600</td><td style="font-weight:700">-¥2,350</td><td>-¥2,350</td><td style="color:var(--green)">¥+0</td></tr><tr class="row-loss"><td>150</td><td>¥+7,700</td><td style="font-weight:700">-¥1,825</td><td>-¥1,825</td><td style="color:var(--green)">¥+0</td></tr><tr class="row-thin"><td>200</td><td>¥+11,225</td><td style="font-weight:700">¥+650</td><td>-¥1,750</td><td style="color:var(--green)">¥+2,400</td></tr><tr class="row-good"><td>250</td><td>¥+14,750</td><td style="font-weight:700">¥+2,150</td><td>-¥2,650</td><td style="color:var(--green)">¥+4,800</td></tr><tr class="row-good"><td>300</td><td>¥+23,900</td><td style="font-weight:700">¥+2,225</td><td>-¥2,575</td><td style="color:var(--green)">¥+4,800</td></tr><tr class="row-good"><td>400</td><td>¥+25,550</td><td style="font-weight:700">¥+7,100</td><td>-¥2,500</td><td style="color:var(--green)">¥+9,600</td></tr><tr class="row-good"><td>500</td><td>¥+32,675</td><td style="font-weight:700">¥+7,325</td><td>-¥4,225</td><td style="color:var(--green)">¥+11,550</td></tr></tbody></table></div>
+
+<h2>🔍 总结</h2>
+<div class="note info">
+  <strong>1. 人头补贴是常规期盈亏的分水岭：</strong>保留人头补贴 → 常规期仍可盈利（需基准单量≥60）；取消人头补贴 → 全线亏损，无一幸免。<br><br>
+  <strong>2. 推广期→常规期的单量冲击：</strong>骑手费率从¥1升到¥2，弹性模型预估单量保留约13%。从100单跌到13单，利润从+¥7,100跌到±¥0左右（有人头补贴时）。<br><br>
+  <strong>3. 业务核心风险：</strong>如果2元费率实测单量远低于预期（比如<20%保留），即使有人头补贴也难以为继。当前1.5元测试数据已确认掉量50%。<br><br>
+  <strong>4. 谈判优先级：</strong>① 人头补贴必须争取延续 ② 尝试将骑手费率控制在¥1.5以下 ③ 如常规期单量崩塌，需与美团协商骑手端补贴。
+</div>
+
+<div class="footer">
+  <p>接力送 UE 模型 V5 · 2026-06-13 · 结算 ¥2.5/单（含美团长期¥0.50补贴）· 时薪¥30/h</p>
+  <p>骑手费率弹性: ¥1.0→87% | ¥2.0→25%</p>
+</div>
+</body></html>
