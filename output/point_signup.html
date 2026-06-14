@@ -288,7 +288,9 @@
         <td>${district}</td>
         <td><span class="assess ${as.cls}">${as.text}</span></td>
         <td>${claimed ? '<span class="badge tk">已认领</span>' : '<span class="badge go">可认领</span>'}</td>
-        <td style="${claimed ? 'font-weight:700' : 'color:var(--l)'}">${claimed ? claimer : '—'}</td>
+        <td style="${claimed ? 'font-weight:700;cursor:pointer;text-decoration:underline;text-decoration-style:dotted' : 'color:var(--l)'}"
+            onclick="${claimed ? `event.stopPropagation();window.editName('${id}','${claimer.replace(/'/g, "\\'")}')` : ''}"
+            title="${claimed ? '点击修改名字' : ''}">${claimed ? claimer : '—'}</td>
       </tr>`;
 
       if (isExpanded) {
@@ -359,6 +361,16 @@
   window.closeModal = function() {
     document.getElementById("modal").classList.remove("show");
     selectedPointId = null;
+  };
+
+  window.editName = async function(id, currentName) {
+    const name = prompt('修改认领人姓名：', currentName);
+    if (!name || !name.trim() || name.trim() === currentName) return;
+    try {
+      await set(ref(db, `points/${id}/name`), name.trim());
+    } catch (e) {
+      alert("修改失败: " + e.message + "\n\n请确认 Firebase 安全规则已更新（name 字段允许写入已认领点位）");
+    }
   };
 
   window.claimPoint = async function() {
