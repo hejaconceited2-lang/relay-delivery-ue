@@ -322,11 +322,16 @@ def build_html():
           html += `</span></div>`;
         });
         html += `</div>`;
-        // 判定结果
-        html += `<div class="assess-summary ${as.level === 'green' ? 'go' : (as.level === 'yellow' ? 'warn' : (as.level === 'red' ? 'bad' : 'na'))}">
+        // 判定结果 + 认领按钮
+        html += `<div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">`;
+        html += `<div class="assess-summary ${as.level === 'green' ? 'go' : (as.level === 'yellow' ? 'warn' : (as.level === 'red' ? 'bad' : 'na'))}" style="flex:1;margin:0">
           <span class="verdict">${as.text}</span>
           <span class="detail">${as.detail}</span>
         </div>`;
+        if (!claimed) {
+          html += `<button onclick="event.stopPropagation();window.openClaimModal('${id}','${name}')" style="padding:8px 20px;background:var(--g);color:#fff;border:none;border-radius:8px;font-size:.84rem;font-weight:700;cursor:pointer;white-space:nowrap">✋ 认领此点位</button>`;
+        }
+        html += `</div>`;
         html += `</div></td></tr>`;
       }
     });
