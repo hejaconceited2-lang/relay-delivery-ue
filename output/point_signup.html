@@ -95,15 +95,15 @@
 </head>
 <body>
 
-<h1>📍 接力送 · 点位认领与评估<span class="sub">点击行展开踩点评估 · 选择指标自动判定可行性</span></h1>
+<h1>📍 接力送 · 点位认领与评估<span class="sub">外卖柜一票否决 · 其余指标决定难度 · 都要做</span></h1>
 <hr>
 
 <div class="status-bar" id="statusBar">
   <div class="stat"><div class="dot" style="background:var(--l)"></div> 总计 <strong id="cntTotal">—</strong></div>
   <div class="stat"><div class="dot" style="background:var(--g)"></div> 可选 <strong id="cntAvail" style="color:var(--g)">—</strong></div>
   <div class="stat"><div class="dot" style="background:var(--r)"></div> 已占 <strong id="cntTaken" style="color:var(--r)">—</strong></div>
-  <div class="stat"><div class="dot" style="background:var(--g)"></div> 可行 <strong id="cntGo" style="color:var(--g)">—</strong></div>
-  <div class="stat"><div class="dot" style="background:var(--y)"></div> 待观察 <strong id="cntMaybe" style="color:var(--y)">—</strong></div>
+  <div class="stat"><div class="dot" style="background:var(--g)"></div> 低难度 <strong id="cntGo" style="color:var(--g)">—</strong></div>
+  <div class="stat"><div class="dot" style="background:var(--y)"></div> 中高难度 <strong id="cntMaybe" style="color:var(--y)">—</strong></div>
   <div class="stat"><div class="dot" style="background:var(--r)"></div> 不可行 <strong id="cntNo" style="color:var(--r)">—</strong></div>
 </div>
 
@@ -121,7 +121,7 @@
   <div class="tips" id="tips">
     <h3>🗓 从评估到开点</h3>
     <div class="tip-grid">
-      <div class="tip-item"><span class="ico">🔍</span><span><strong>① 踩点评估四项</strong><br><small>外卖柜（有一票否决）→ 骑手路线 → 物业态度 → 摆放空间。全部勾选后系统自动判定。</small></span></div>
+      <div class="tip-item"><span class="ico">🔍</span><span><strong>① 踩点评估</strong><br><small>外卖柜（有一票否决）→ 骑手路线/物业态度/摆放空间（决定难度高低，都要做）</small></span></div>
       <div class="tip-item"><span class="ico">🪪</span><span><strong>② 提交人员信息</strong><br><small>开点前一天提供：身份证 + 电话 + 名字</small></span></div>
       <div class="tip-item"><span class="ico">🔥</span><span><strong>③ 美团火炬认证</strong><br><small>开点前一天 24:00 前完成，否则无法使用</small></span></div>
       <div class="tip-item"><span class="ico">🪧</span><span><strong>④ 物料准备</strong><br><small>KT板（严物业小号）+ 放餐篮 + 马甲</small></span></div>
@@ -208,21 +208,19 @@
   }
 
   function assess(scouting) {
-    // 未填写任何指标
     if (!scouting || countFilled(scouting) === 0) return { level: "gray", text: "未踩点", cls: "gray", detail: "尚未评估" };
-    // 外卖柜 = 有 → 一票否决
+    // 外卖柜 = 有 → 唯一一票否决
     if (scouting.locker === "有") return { level: "red", text: "🔴 不可行", cls: "red", detail: "有外卖柜，骑手直接放柜，业务不成立" };
-    // 计算不利因素数量
-    let bad = 0;
-    if (scouting.rider_route === "分散") bad++;
-    if (scouting.property === "严格") bad++;
-    if (scouting.shelter === "露天") bad++;
+    // 计算有利因素数量（路线集中/物业宽松/有遮挡）
+    let good = 0;
+    if (scouting.rider_route === "集中") good++;
+    if (scouting.property === "宽松") good++;
+    if (scouting.shelter === "有遮挡") good++;
     const filled = countFilled(scouting);
-    if (filled < 4) return { level: "yellow", text: "🟡 待完善", cls: "yellow", detail: `已填${filled}/4项，还差${4-filled}项` };
-    if (bad === 0) return { level: "green", text: "🟢 优质点位", cls: "green", detail: "四项指标全优，建议优先开设" };
-    if (bad === 1) return { level: "green", text: "🟢 可行", cls: "green", detail: "仅1项不利因素，业务可开展" };
-    if (bad === 2) return { level: "yellow", text: "🟡 待观察", cls: "yellow", detail: "2项不利因素，需综合判断" };
-    return { level: "red", text: "🔴 不推荐", cls: "red", detail: "3项不利因素，运营难度大" };
+    if (filled < 4) return { level: "gray", text: "待完善", cls: "gray", detail: `已填${filled}/4项，还差${4-filled}项` };
+    if (good >= 2) return { level: "green", text: "🟢 低难度", cls: "green", detail: `${good}/3项有利，条件较好` };
+    if (good === 1) return { level: "yellow", text: "🟡 中等难度", cls: "yellow", detail: "仅1项有利，运营需多投入" };
+    return { level: "yellow", text: "🟡 较高难度", cls: "yellow", detail: "3项不利，需重点攻坚" };
   }
 
   async function initPoints() {
