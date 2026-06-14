@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>接力送 · 点位认领</title>
+<style>
+  :root{--g:#27ae60;--gb:#d5f5e3;--b:#2980b9;--bb:#d4e6f1;--r:#e74c3c;--rb:#fadbd8;--y:#f39c12;--yb:#fef9e7;--t:#2c3e50;--l:#7f8c8d;--br:#e0e0e0;--bg:#fafafa}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei",sans-serif;color:var(--t);background:#fff;max-width:1000px;margin:0 auto;padding:28px 32px;line-height:1.65}
+  h1{font-size:1.6rem;font-weight:800;margin-bottom:2px}
+  h1 .sub{font-size:.78rem;color:var(--l);font-weight:400;margin-left:8px}
+  h2{font-size:1.1rem;font-weight:700;margin:28px 0 10px}
+  hr{border:none;border-top:2px solid #eee;margin:14px 0}
+
+  .status-bar{display:flex;gap:24px;flex-wrap:wrap;margin:14px 0;font-size:.84rem}
+  .status-bar .stat{display:flex;align-items:center;gap:6px}
+  .status-bar .dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+  .dot.avail{background:var(--g)} .dot.taken{background:var(--r)} .dot.total{background:var(--l)}
+
+  table{width:100%;border-collapse:collapse;font-size:.86rem;margin:10px 0}
+  thead th{background:#2c3e50;color:#fff;padding:10px 10px;font-weight:600;text-align:center;white-space:nowrap}
+  thead th:first-child{border-radius:8px 0 0 0} thead th:last-child{border-radius:0 8px 0 0}
+  tbody td{padding:10px 10px;text-align:center;border-bottom:1px solid var(--br);transition:background .2s}
+  tbody tr.avail{cursor:pointer}
+  tbody tr.avail:hover{background:var(--gb)!important}
+  tbody tr.taken{background:#fafafa}
+  tbody tr.taken td{color:var(--l)}
+  tbody tr.taken td.name{font-weight:700;color:var(--t)}
+  .badge{display:inline-block;border-radius:12px;padding:3px 12px;font-size:.76rem;font-weight:700}
+  .badge.go{background:var(--gb);color:#1e8449} .badge.no{background:var(--rb);color:#922b21}
+
+  .loading{text-align:center;padding:40px;color:var(--l);font-size:.9rem}
+
+  .tips-toggle{display:inline-block;color:var(--b);cursor:pointer;font-size:.88rem;font-weight:700;margin:8px 0;user-select:none}
+  .tips-toggle:hover{text-decoration:underline}
+  .tips{display:none;background:var(--bb);border-radius:10px;padding:20px 24px;margin:10px 0;border:1px solid var(--b)}
+  .tips.show{display:block}
+  .tips h3{font-size:.92rem;margin-bottom:10px;color:var(--b)}
+  .tips .tip-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px 20px;font-size:.8rem}
+  @media(max-width:600px){.tips .tip-grid{grid-template-columns:1fr}}
+  .tips .tip-item{display:flex;gap:6px;align-items:flex-start}
+  .tips .tip-item .ico{flex-shrink:0}
+  .tips .warn{font-size:.76rem;color:var(--r);margin-top:10px;background:#fff;border-radius:6px;padding:8px 12px}
+
+  .modal-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.45);z-index:100;align-items:center;justify-content:center}
+  .modal-overlay.show{display:flex}
+  .modal{background:#fff;border-radius:12px;padding:24px 28px;width:90%;max-width:400px;text-align:center;box-shadow:0 8px 30px rgba(0,0,0,.15)}
+  .modal h3{margin-bottom:12px}
+  .modal input{width:100%;padding:10px 14px;border:2px solid var(--b);border-radius:8px;font-size:1rem;text-align:center;margin:12px 0;outline:none}
+  .modal input:focus{border-color:var(--g)}
+  .modal .btn-row{display:flex;gap:10px;justify-content:center;margin-top:14px}
+  .modal button{padding:10px 28px;border:none;border-radius:8px;font-size:.9rem;font-weight:700;cursor:pointer}
+  .modal .btn-go{background:var(--g);color:#fff} .modal .btn-go:hover{filter:brightness(.9)}
+  .modal .btn-cancel{background:#eee;color:var(--t)} .modal .btn-cancel:hover{background:#ddd}
+  .modal .err{color:var(--r);font-size:.8rem;margin-top:6px;display:none}
+
+  .footer{margin-top:36px;padding-top:12px;border-top:2px solid #eee;color:var(--l);font-size:.72rem}
+</style>
+</head>
+<body>
+
+<h1>📍 接力送 · 点位认领<span class="sub">点击未占点位，输入姓名即可认领</span></h1>
+<hr>
+
+<div class="status-bar" id="statusBar">
+  <div class="stat"><div class="dot total"></div> 总计 <strong id="cntTotal">—</strong> 个点位</div>
+  <div class="stat"><div class="dot avail"></div> 可选 <strong id="cntAvail" style="color:var(--g)">—</strong> 个</div>
+  <div class="stat"><div class="dot taken"></div> 已占 <strong id="cntTaken" style="color:var(--r)">—</strong> 个</div>
+</div>
+
+<div class="loading" id="loading">加载中…</div>
+
+<table id="table" style="display:none">
+<thead><tr>
+  <th>序号</th><th>点位名称</th><th>区域</th><th>踩点状态</th><th>状态</th><th>认领人</th>
+</tr></thead>
+<tbody id="tbody"></tbody>
+</table>
+
+<!-- ═══════ 开点流程提示 ═══════ -->
+<div style="margin-top:20px">
+  <div class="tips-toggle" onclick="document.getElementById('tips').classList.toggle('show');this.textContent=document.getElementById('tips').classList.contains('show')?'▼ 隐藏开点流程':'▶ 查看开点流程'">▶ 查看开点流程</div>
+  <div class="tips" id="tips">
+    <h3>🗓 从认领点位到正式开点</h3>
+    <div class="tip-grid">
+      <div class="tip-item"><span class="ico">📦</span><span><strong>踩点确认</strong><br><small>确认楼下是否有外卖柜、骑手路线（建议高峰期去）、物业严格度、摆放位置</small></span></div>
+      <div class="tip-item"><span class="ico">🪪</span><span><strong>提交人员信息</strong><br><small>开点前一天提供：身份证 + 电话 + 名字，缺一不可</small></span></div>
+      <div class="tip-item"><span class="ico">🔥</span><span><strong>美团火炬认证</strong><br><small>开点前一天 24:00 前必须完成认证，否则第二天账号无法使用</small></span></div>
+      <div class="tip-item"><span class="ico">🪧</span><span><strong>物料准备</strong><br><small>接力送KT板（贴骑手交接二维码）+ 放餐篮子 + 接力送马甲</small></span></div>
+    </div>
+    <div class="warn">⚠ 物业严格的地方尽量使用小号KT板，降低存在感。踩点时先确认物业态度。</div>
+  </div>
+</div>
+
+<div class="footer">
+  <p>数据实时同步 · 已占点位他人不可覆盖 · 有问题联系管理员</p>
+</div>
+
+<!-- ═══════ 认领弹窗 ═══════ -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <h3 id="modalTitle">认领点位</h3>
+    <p style="font-size:.88rem;color:var(--l)" id="modalPoint">—</p>
+    <input type="text" id="modalInput" placeholder="请输入你的姓名" maxlength="20" autocomplete="off">
+    <div class="err" id="modalErr">点位刚刚被别人占了，请选择其他点位。</div>
+    <div class="btn-row">
+      <button class="btn-cancel" onclick="closeModal()">取消</button>
+      <button class="btn-go" id="modalBtn" onclick="claimPoint()">确认认领</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ Firebase SDK ═══════ -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
+  import { getDatabase, ref, get, set, onValue, off } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyA0BVosjdj5SQQIRW_n4BPPUy21dZJW8EI",
+    authDomain: "relay-delivery-signup.firebaseapp.com",
+    databaseURL: "https://relay-delivery-signup-default-rtdb.firebaseio.com",
+    projectId: "relay-delivery-signup",
+    storageBucket: "relay-delivery-signup.firebasestorage.app",
+    messagingSenderId: "769448303567",
+    appId: "1:769448303567:web:707701e31bc1b3cd2010ba",
+    measurementId: "G-7DECQPG4NT"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+  const pointsRef = ref(db, "points");
+
+  // 点位数据：[id, 名称, 区域, 踩点状态]
+  const POINTS = [
+    ["p01", "珠江国际纺织城",     "—",      "✅ 已踩点"],
+    ["p02", "中大附属第六医院",    "天河区",  "⬜ 未踩点"],
+    ["p03", "中大附属第三医院",    "天河区",  "⬜ 未踩点"],
+    ["p04", "中大附三岭南医院",    "黄埔区",  "⬜ 未踩点"],
+    ["p05", "云升科学园",         "黄埔区",  "⬜ 未踩点"],
+    ["p06", "丰兴广场",           "天河区",  "⬜ 未踩点"],
+    ["p07", "万达广场萝岗点",     "黄埔区",  "⬜ 未踩点"],
+    ["p08", "荔胜广场",           "荔湾区",  "⬜ 未踩点"],
+  ];
+
+  let currentData = {};
+  let selectedPointId = null;
+
+  // 初始化：确保点位数据存在
+  async function initPoints() {
+    const snap = await get(pointsRef);
+    if (!snap.exists()) {
+      const init = {};
+      POINTS.forEach(([id]) => { init[id] = { claimed: false, name: "", timestamp: 0 }; });
+      await set(pointsRef, init);
+    }
+  }
+
+  function renderTable(snapshot) {
+    const data = snapshot?.val() || {};
+    currentData = data;
+
+    let html = "";
+    let availCount = 0, takenCount = 0;
+
+    POINTS.forEach(([id, name, district, scout], i) => {
+      const entry = data[id];
+      // 如果 Firebase 中没有这个点位或 claimed 为 false，则为可选
+      const isClaimed = entry?.claimed === true;
+      const claimer = entry?.name || "";
+
+      if (isClaimed) {
+        takenCount++;
+        html += `<tr class="taken">
+          <td>${i + 1}</td><td>${name}</td><td>${district}</td><td>${scout}</td>
+          <td><span class="badge no">已认领</span></td>
+          <td class="name">${claimer}</td>
+        </tr>`;
+      } else {
+        availCount++;
+        html += `<tr class="avail" onclick="window.openModal('${id}','${name}')">
+          <td>${i + 1}</td><td>${name}</td><td>${district}</td><td>${scout}</td>
+          <td><span class="badge go">可认领</span></td>
+          <td style="color:var(--l)">点击认领 →</td>
+        </tr>`;
+      }
+    });
+
+    document.getElementById("tbody").innerHTML = html;
+    document.getElementById("cntTotal").textContent = POINTS.length;
+    document.getElementById("cntAvail").textContent = availCount;
+    document.getElementById("cntTaken").textContent = takenCount;
+    document.getElementById("loading").style.display = "none";
+    document.getElementById("table").style.display = "";
+  }
+
+  // ═══════ 全局函数（供 onclick 调用） ═══════
+  window.openModal = function(id, name) {
+    // 二次检查：确认还没被占
+    if (currentData[id]?.claimed === true) {
+      alert(`「${name}」刚刚已被认领，请选择其他点位。`);
+      return;
+    }
+    selectedPointId = id;
+    document.getElementById("modalPoint").textContent = name;
+    document.getElementById("modalTitle").textContent = "📝 认领 " + name;
+    document.getElementById("modalInput").value = "";
+    document.getElementById("modalErr").style.display = "none";
+    document.getElementById("modal").classList.add("show");
+    document.getElementById("modalInput").focus();
+  };
+
+  window.closeModal = function() {
+    document.getElementById("modal").classList.remove("show");
+    selectedPointId = null;
+  };
+
+  window.claimPoint = async function() {
+    const name = document.getElementById("modalInput").value.trim();
+    if (!name) { document.getElementById("modalInput").focus(); return; }
+
+    document.getElementById("modalBtn").disabled = true;
+    document.getElementById("modalBtn").textContent = "提交中…";
+
+    // 原子性检查：读取当前状态
+    const snap = await get(ref(db, "points/" + selectedPointId));
+    if (snap.exists() && snap.val().claimed === true) {
+      document.getElementById("modalErr").style.display = "block";
+      document.getElementById("modalErr").textContent = "刚刚被别人认领了，请选择其他点位。";
+      document.getElementById("modalBtn").disabled = false;
+      document.getElementById("modalBtn").textContent = "确认认领";
+      return;
+    }
+
+    try {
+      await set(ref(db, "points/" + selectedPointId), {
+        claimed: true,
+        name: name,
+        timestamp: Date.now()
+      });
+      closeModal();
+    } catch (e) {
+      alert("提交失败: " + e.message);
+      document.getElementById("modalBtn").disabled = false;
+      document.getElementById("modalBtn").textContent = "确认认领";
+    }
+  };
+
+  // 回车提交
+  document.getElementById("modalInput").addEventListener("keydown", function(e) {
+    if (e.key === "Enter") window.claimPoint();
+  });
+
+  // ═══════ 启动 ═══════
+  try {
+    await initPoints();
+    onValue(pointsRef, renderTable);
+  } catch (e) {
+    document.getElementById("loading").innerHTML = `<span style="color:var(--r)">加载失败: ${e.message}<br><small>请检查网络或联系管理员</small></span>`;
+    console.error(e);
+  }
+</script>
+</body></html>
