@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>接力送 · UE 模型</title>
+<style>
+  :root { --bg:#FAFAFA; --card:#FFF; --text:#1a1a1a; --sub:#888; --line:#E0E0E0;
+    --green:#2E7D32; --red:#C62828; --blue:#1565C0; --orange:#E65100; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:-apple-system,"Microsoft YaHei","PingFang SC",sans-serif; background:var(--bg); color:var(--text); line-height:1.6; }
+  .container { max-width:1000px; margin:0 auto; padding:28px 20px; }
+  h1 { font-size:24px; margin-bottom:4px; }
+  h2 { font-size:18px; margin:24px 0 10px; padding-bottom:6px; border-bottom:2px solid var(--line); }
+  h3 { font-size:15px; margin:16px 0 8px; }
+  .sub { font-size:13px; color:var(--sub); margin-bottom:20px; }
+  .card { background:var(--card); border-radius:10px; padding:18px 22px; margin-bottom:16px; box-shadow:0 1px 4px rgba(0,0,0,0.06); }
+  table { width:100%; border-collapse:collapse; font-size:12px; margin:10px 0; }
+  th { background:#f5f5f5; padding:5px 8px; text-align:center; font-weight:700; border:1px solid #e0e0e0; }
+  td { padding:4px 8px; text-align:center; border:1px solid #f0f0f0; }
+  td:first-child, th:first-child { text-align:left; }
+  .pos { color:var(--green); font-weight:700; }
+  .neg { color:var(--red); font-weight:700; }
+  .tag { display:inline-block; padding:2px 8px; border-radius:10px; font-size:11px; }
+  .tag-green { background:#E8F5E9; color:var(--green); }
+  .tag-red { background:#FFEBEE; color:var(--red); }
+  .tag-blue { background:#E3F2FD; color:var(--blue); }
+  .note { font-size:12px; color:var(--sub); margin-top:8px; padding:10px; background:#FFFDE7; border-radius:6px; }
+  .flow { display:flex; gap:8px; flex-wrap:wrap; margin:12px 0; }
+  .flow-step { flex:1; min-width:130px; background:#E3F2FD; border-radius:8px; padding:12px; text-align:center; font-size:13px; }
+  .flow-step .num { font-size:22px; font-weight:800; color:var(--blue); }
+  .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .kpi { text-align:center; padding:12px; background:#f5f5f5; border-radius:8px; }
+  .kpi .num { font-size:24px; font-weight:800; }
+  @media(max-width:700px){ .grid-2{grid-template-columns:1fr;} }
+  .footer { text-align:center; font-size:11px; color:#ccc; margin-top:28px; }
+  a { color:var(--blue); text-decoration:none; }
+  a:hover { text-decoration:underline; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>接力送 · UE 模型</h1>
+<div class="sub">办公楼宇末端配送 — 美团骑手送至楼下，我方接力上楼 &nbsp;|&nbsp; 2026-06-14</div>
+
+<!-- ── 营运逻辑 ── -->
+<h2>营运逻辑</h2>
+<div class="card">
+  <p><b>核心价值：</b>美团骑手省去爬楼时间，我方赚取二段配送费。</p>
+  <div class="flow">
+    <div class="flow-step"><div class="num">1</div>美团骑手<br>送至楼下</div>
+    <div class="flow-step"><div class="num">2</div>楼下指引员<br>1人×3h · 登记引导</div>
+    <div class="flow-step"><div class="num">3</div>上楼配送员<br>N人×2-3h · 峰期接力</div>
+    <div class="flow-step"><div class="num">4</div>到户<br>完成配送</div>
+  </div>
+
+  <h3>收入来源</h3>
+  <table>
+    <tr><th>收入项</th><th>金额</th><th>说明</th></tr>
+    <tr><td>订单结算</td><td>¥2.50/单</td><td>骑手支付 ¥2.00 + 美团补贴 ¥0.50（长期有效）</td></tr>
+    <tr><td>人头补贴</td><td>(T−1)×¥80/天</td><td>条件：点位营业 ≥3h、人均配送 ≥20单</td></tr>
+    <tr><td>引流期（前2周）</td><td>骑手仅付 ¥1.00</td><td>美团额外补贴骑手端，我方仍按 ¥2.50 结算</td></tr>
+  </table>
+
+  <h3>补贴两阶段</h3>
+  <table>
+    <tr><th>阶段</th><th>时长</th><th>骑手付费</th><th>我方结算</th><th>美团每单补贴</th><th>人头补贴</th></tr>
+    <tr><td>Phase 1 · 引流期</td><td>前2周</td><td>¥1.00</td><td>¥2.50</td><td>¥1.50</td><td>(T−1)×¥80</td></tr>
+    <tr><td>Phase 2 · 长期补贴</td><td>长期</td><td>¥2.00</td><td>¥2.50</td><td>¥0.50</td><td>(T−1)×¥80</td></tr>
+  </table>
+
+  <h3>基础参数</h3>
+  <div class="grid-2" style="margin-top:8px">
+    <div class="kpi"><div class="num">¥30/h</div>时薪</div>
+    <div class="kpi"><div class="num">¥100/月</div>月物料</div>
+    <div class="kpi"><div class="num">12单/h</div>人均产能</div>
+    <div class="kpi"><div class="num">≥20单</div>补贴门槛（人均）</div>
+    <div class="kpi"><div class="num">1锚+N峰</div>排班模式</div>
+    <div class="kpi"><div class="num">30天/月</div>月天数</div>
+  </div>
+</div>
+
+<!-- ── Part 1 ── -->
+<h2>Part 1 · 有补贴 UE 数据</h2>
+<div class="card">
+  <p style="font-size:13px;color:var(--sub);margin-bottom:10px">结算 ¥2.50/单，人头补贴 (T−1)×¥80/天，补贴条件：人均≥20单且营业≥3h。产能 12单/h。</p>
+  <div style="overflow-x:auto">
+  <table>
+    <thead>
+      <tr><th>日均单量</th><th>排班</th><th>人数</th><th>人均单</th><th>日补贴</th><th>月订单收入</th><th>月人头补贴</th><th>月总成本</th><th>月毛利</th><th>毛利率</th><th>达标</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>20</td><td>3h×1+2h×1</td><td>2</td><td>10.0</td><td>¥0</td><td>¥1,500</td><td>¥0</td><td>¥4,590</td><td class="neg">−¥3,090</td><td class="neg">−206.0%</td><td><span class="tag tag-red">✗</span></td></tr>
+      <tr><td>30</td><td>3h×1+2h×1</td><td>2</td><td>15.0</td><td>¥0</td><td>¥2,250</td><td>¥0</td><td>¥4,590</td><td class="neg">−¥2,340</td><td class="neg">−104.0%</td><td><span class="tag tag-red">✗</span></td></tr>
+      <tr style="background:#FFFDE7"><td><b>40</b></td><td>3h×1+2h×1</td><td>2</td><td><b>20.0</b></td><td>¥80</td><td>¥3,000</td><td>¥2,400</td><td>¥4,590</td><td class="pos"><b>+¥810</b></td><td class="pos">+15.0%</td><td><span class="tag tag-green">✓</span></td></tr>
+      <tr><td>50</td><td>3h×1+2h×1</td><td>2</td><td>25.0</td><td>¥80</td><td>¥3,750</td><td>¥2,400</td><td>¥4,590</td><td class="pos">+¥1,560</td><td class="pos">+25.4%</td><td><span class="tag tag-green">✓</span></td></tr>
+      <tr><td>60</td><td>3h×1+2h×2</td><td>3</td><td>20.0</td><td>¥160</td><td>¥4,500</td><td>¥4,800</td><td>¥6,390</td><td class="pos">+¥2,910</td><td class="pos">+31.3%</td><td><span class="tag tag-green">✓</span></td></tr>
+      <tr><td>70</td><td>3h×1+2h×2</td><td>3</td><td>23.3</td><td>¥160</td><td>¥5,250</td><td>¥4,800</td><td>¥6,390</td><td class="pos">+¥3,660</td><td class="pos">+36.4%</td><td><span class="tag tag-green">✓</span></td></tr>
+      <tr><td>80</td><td>3h×1+2h×3</td><td>4</td><td>20.0</td><td>¥240</td><td>¥6,000</td><td>¥7,200</td><td>¥8,190</td><td class="pos">+¥5,010</td><td class="pos">+38.0%</td><td><span class="tag tag-green">✓</span></td></tr>
+      <tr><td>90</td><td>3h×1+2h×3</td><td>4</td><td>22.5</td><td>¥240</td><td>¥6,750</td><td>¥7,200</td><td>¥8,190</td><td class="pos">+¥5,760</td><td class="pos">+41.3%</td><td><span class="tag tag-green">✓</span></td></tr>
+      <tr><td>100</td><td>3h×1+2h×4</td><td>5</td><td>20.0</td><td>¥320</td><td>¥7,500</td><td>¥9,600</td><td>¥9,990</td><td class="pos">+¥7,110</td><td class="pos">+41.6%</td><td><span class="tag tag-green">✓</span></td></tr>
+      <tr><td>120</td><td>3h×1+2h×5</td><td>6</td><td>20.0</td><td>¥400</td><td>¥9,000</td><td>¥12,000</td><td>¥11,790</td><td class="pos">+¥9,210</td><td class="pos">+43.9%</td><td><span class="tag tag-green">✓</span></td></tr>
+      <tr><td>150</td><td>3h×1+2h×6</td><td>7</td><td>21.4</td><td>¥480</td><td>¥11,250</td><td>¥14,400</td><td>¥13,590</td><td class="pos">+¥12,060</td><td class="pos">+47.0%</td><td><span class="tag tag-green">✓</span></td></tr>
+      <tr><td>180</td><td>3h×1+2h×8</td><td>9</td><td>20.0</td><td>¥640</td><td>¥13,500</td><td>¥19,200</td><td>¥17,190</td><td class="pos">+¥15,510</td><td class="pos">+47.4%</td><td><span class="tag tag-green">✓</span></td></tr>
+      <tr><td>200</td><td>3h×1+2h×9</td><td>10</td><td>20.0</td><td>¥720</td><td>¥15,000</td><td>¥21,600</td><td>¥18,990</td><td class="pos">+¥17,610</td><td class="pos">+48.1%</td><td><span class="tag tag-green">✓</span></td></tr>
+      <tr><td>250</td><td>3h×1+2h×11</td><td>12</td><td>20.8</td><td>¥880</td><td>¥18,750</td><td>¥26,400</td><td>¥22,590</td><td class="pos">+¥22,560</td><td class="pos">+50.0%</td><td><span class="tag tag-green">✓</span></td></tr>
+      <tr><td>300</td><td>3h×1+2h×14</td><td>15</td><td>20.0</td><td>¥1,120</td><td>¥22,500</td><td>¥33,600</td><td>¥27,990</td><td class="pos">+¥28,110</td><td class="pos">+50.1%</td><td><span class="tag tag-green">✓</span></td></tr>
+      <tr><td>400</td><td>3h×1+2h×19</td><td>20</td><td>20.0</td><td>¥1,520</td><td>¥30,000</td><td>¥45,600</td><td>¥36,990</td><td class="pos">+¥38,610</td><td class="pos">+51.1%</td><td><span class="tag tag-green">✓</span></td></tr>
+      <tr><td>500</td><td>3h×1+2h×24</td><td>25</td><td>20.0</td><td>¥1,920</td><td>¥37,500</td><td>¥57,600</td><td>¥45,990</td><td class="pos">+¥49,110</td><td class="pos">+51.6%</td><td><span class="tag tag-green">✓</span></td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="note">
+    <b>关键盈亏节点：</b>40单为盈亏平衡点。<br>
+    60单 → 月利约 ¥2,900；100单 → 月利约 ¥7,100；200单 → ¥17,600；500单 → ¥49,100<br>
+    每增1个配送员（2小时班），日补贴 +¥80，成本仅 +¥60，净贡献 +¥20/天 → <b>规模经济效应</b>
+  </div>
+</div>
+
+<!-- ── Part 2 ── -->
+<h2>Part 2 · 兼职提效对整体 UE 的影响</h2>
+<div class="card">
+  <p style="font-size:13px;color:var(--sub);margin-bottom:10px">上楼配送员人均产能从 <b>12单/h</b> 提升至 <b>15单/h</b> 和 <b>18单/h</b>。提效路径：路线优化、电梯优先级、熟手效应。</p>
+  <div style="overflow-x:auto">
+  <table>
+    <thead>
+      <tr><th>日均单量</th><th>人数<br>12</th><th>月毛利<br>12</th><th>利率<br>12</th><th>人数<br>15</th><th>月毛利<br>15</th><th>利率<br>15</th><th>人数<br>18</th><th>月毛利<br>18</th><th>利率<br>18</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>20</td><td>2</td><td class="neg">−¥3,090</td><td class="neg">−206%</td><td>2</td><td class="neg">−¥3,090</td><td class="neg">−206%</td><td>2</td><td class="neg">−¥3,090</td><td class="neg">−206%</td></tr>
+      <tr><td>30</td><td>2</td><td class="neg">−¥2,340</td><td class="neg">−104%</td><td>2</td><td class="neg">−¥2,340</td><td class="neg">−104%</td><td>2</td><td class="neg">−¥2,340</td><td class="neg">−104%</td></tr>
+      <tr><td>40</td><td>2</td><td class="pos">+¥810</td><td class="pos">+15%</td><td>2</td><td class="pos">+¥810</td><td class="pos">+15%</td><td>2</td><td class="pos">+¥810</td><td class="pos">+15%</td></tr>
+      <tr><td>50</td><td>2</td><td class="pos">+¥1,560</td><td class="pos">+25%</td><td>2</td><td class="pos">+¥1,560</td><td class="pos">+25%</td><td>2</td><td class="pos">+¥1,560</td><td class="pos">+25%</td></tr>
+      <tr><td>60</td><td>2</td><td class="pos">+¥1,410</td><td class="pos">+20%</td><td>2</td><td class="pos">+¥1,860</td><td class="pos">+27%</td><td>2</td><td class="pos">+¥2,310</td><td class="pos">+34%</td></tr>
+      <tr><td>70</td><td>3</td><td class="pos">+¥3,660</td><td class="pos">+36%</td><td>2</td><td class="pos">+¥2,160</td><td class="pos">+28%</td><td>2</td><td class="pos">+¥2,610</td><td class="pos">+34%</td></tr>
+      <tr><td>80</td><td>3</td><td class="pos">+¥3,510</td><td class="pos">+33%</td><td>3</td><td class="pos">+¥4,410</td><td class="pos">+41%</td><td>2</td><td class="pos">+¥2,910</td><td class="pos">+35%</td></tr>
+      <tr><td>90</td><td>3</td><td class="pos">+¥3,360</td><td class="pos">+29%</td><td>3</td><td class="pos">+¥4,260</td><td class="pos">+37%</td><td>3</td><td class="pos">+¥5,160</td><td class="pos">+45%</td></tr>
+      <tr><td>100</td><td>3</td><td class="pos">+¥4,110</td><td class="pos">+33%</td><td>3</td><td class="pos">+¥5,010</td><td class="pos">+41%</td><td>3</td><td class="pos">+¥5,010</td><td class="pos">+41%</td></tr>
+      <tr><td>120</td><td>5</td><td class="pos">+¥8,610</td><td class="pos">+46%</td><td>3</td><td class="pos">+¥5,610</td><td class="pos">+41%</td><td>3</td><td class="pos">+¥5,610</td><td class="pos">+41%</td></tr>
+      <tr><td>150</td><td>5</td><td class="pos">+¥7,260</td><td class="pos">+35%</td><td>4</td><td class="pos">+¥7,560</td><td class="pos">+41%</td><td>4</td><td class="pos">+¥8,910</td><td class="pos">+48%</td></tr>
+      <tr><td>180</td><td>8</td><td class="pos">+¥14,910</td><td class="pos">+49%</td><td>5</td><td class="pos">+¥9,510</td><td class="pos">+41%</td><td>4</td><td class="pos">+¥9,810</td><td class="pos">+47%</td></tr>
+      <tr><td>200</td><td>6</td><td class="pos">+¥10,710</td><td class="pos">+40%</td><td>5</td><td class="pos">+¥11,010</td><td class="pos">+45%</td><td>5</td><td class="pos">+¥12,810</td><td class="pos">+52%</td></tr>
+      <tr><td>250</td><td>9</td><td class="pos">+¥17,160</td><td class="pos">+45%</td><td>6</td><td class="pos">+¥14,460</td><td class="pos">+47%</td><td>6</td><td class="pos">+¥16,710</td><td class="pos">+54%</td></tr>
+      <tr><td>300</td><td>9</td><td class="pos">+¥17,310</td><td class="pos">+42%</td><td>7</td><td class="pos">+¥17,910</td><td class="pos">+49%</td><td>6</td><td class="pos">+¥18,210</td><td class="pos">+53%</td></tr>
+      <tr><td>400</td><td>17</td><td class="pos">+¥36,810</td><td class="pos">+54%</td><td>11</td><td class="pos">+¥28,710</td><td class="pos">+53%</td><td>8</td><td class="pos">+¥25,110</td><td class="pos">+54%</td></tr>
+      <tr><td>500</td><td>17</td><td class="pos">+¥37,110</td><td class="pos">+49%</td><td>17</td><td class="pos">+¥44,310</td><td class="pos">+58%</td><td>10</td><td class="pos">+¥32,010</td><td class="pos">+54%</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3>提效分析</h3>
+  <div class="grid-2">
+    <div>
+      <p><b>提效至 15单/h（+25%）</b></p>
+      <ul style="font-size:13px;padding-left:18px;">
+        <li>中低单量段人力配置基本不变</li>
+        <li>高单量段（200+）可减少 1-6 人</li>
+        <li>工时压缩约 15-25%</li>
+      </ul>
+    </div>
+    <div>
+      <p><b>提效至 18单/h（+50%）</b></p>
+      <ul style="font-size:13px;padding-left:18px;">
+        <li>大部分单量段可减少 1-2 人或压缩工时</li>
+        <li>200单以下效果显著</li>
+        <li>500单段从 17人 降至 10人，工时从 43h 降至 30h</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="note" style="margin-top:16px;background:#FFF3E0;">
+    <b>⚠ 补贴激励的抵消效应</b><br>
+    当前补贴结构下（每增1人·2h，成本 +¥60，补贴 +¥80，净赚 ¥20），利润最优解实际<b>倾向多配人</b>。提效后若直接减员，会同时损失补贴收入，净效果可能为负。<br><br>
+    <b>提效的真正价值：</b><br>
+    1. <b>产能富余：</b>同等配置下产能利用率从 80-90% 降至 55-65%，可承接单量高峰<br>
+    2. <b>增长弹性：</b>单量增长时无需等比增人，边际成本递减<br>
+    3. <b>降补贴后的生存能力：</b>补贴退出后，高效率是盈亏平衡的唯一出路
+  </div>
+</div>
+
+<div class="footer">数据日期 2026-06-14 &nbsp;|&nbsp; 接力送 UE 项目 &nbsp;|&nbsp; <a href="/relay-delivery-ue/">← 返回进度看板</a></div>
+</div>
+</body>
+</html>

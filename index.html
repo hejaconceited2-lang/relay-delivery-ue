@@ -84,6 +84,14 @@
     .grid-2 { grid-template-columns: 1fr; }
     .weeks { grid-template-columns: repeat(2, 1fr); }
   }
+
+  /* ── Nav links ── */
+  .nav-card a { color: var(--blue); text-decoration: none; }
+  .nav-card a:hover { text-decoration: underline; }
+  .nav-card ul { list-style: none; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 4px 20px; }
+  .nav-card li { font-size: 13px; padding: 4px 0; }
+  .nav-card li::before { content: '▸ '; color: var(--sub); font-size: 10px; }
+  @media (max-width: 500px) { .nav-card ul { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
@@ -102,6 +110,20 @@
     </div>
   </div>
   <hr>
+
+  <!-- Nav links -->
+  <div class="card nav-card">
+    <h2>📊 分析报告</h2>
+    <ul>
+      <li><a href="output/ue_model.html"><b>UE 模型（有补贴场景 + 提效分析）</b></a></li>
+      <li><a href="output/simple_ue.html">精简 UE 模型</a></li>
+      <li><a href="output/three_phase_ue.html">三阶段全生命周期模型</a></li>
+      <li><a href="output/monthly_ue_model.html">月度 UE v2</a></li>
+      <li><a href="output/monthly_ue_model_v3.html">月度 UE v3</a></li>
+      <li><a href="output/monthly_ue_model_v4.html">月度 UE v4</a></li>
+      <li><a href="output/monthly_ue_model_v5.html">月度 UE v5</a></li>
+    </ul>
+  </div>
 
   <!-- Two-column -->
   <div class="grid-2">
