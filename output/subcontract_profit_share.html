@@ -79,8 +79,7 @@
   <thead><tr><th>阶段</th><th>时长</th><th>骑手付费</th><th>美团结算</th><th>人头补贴</th><th>单量变化</th></tr></thead>
   <tbody>
   <tr class="g"><td>Phase 1 · 引流期</td><td>前2周</td><td>¥1.00</td><td>¥2.50</td><td>(T−1)×¥80 ✅</td><td>95-100% 基准</td></tr>
-  <tr class="t"><td>Phase 2 · 长期补贴</td><td>长期</td><td>¥2.00</td><td>¥2.50</td><td>(T−1)×¥80 ✅</td><td>13-25% 基准</td></tr>
-  <tr class="l"><td>Phase 3 · 补贴归零</td><td>未来</td><td>¥2.00</td><td>¥2.00</td><td>❌ 取消</td><td>13-25% 基准</td></tr>
+  <tr class="t"><td>Phase 2 · 常规期</td><td>长期</td><td>¥2.00</td><td>¥2.50</td><td>(T−1)×¥80 ✅</td><td>13-25% 基准</td></tr>
   </tbody></table>
   <div style="font-size:.78rem;color:var(--l);margin-top:6px">* 补贴条件：营业≥3h 且人均≥20单。人头补贴公式: (总人数−1)×¥80/天。产能基准: 12单/h/人。</div>
 </div>
@@ -91,67 +90,59 @@
   <div style="background:var(--bg);border-radius:8px;padding:14px 16px;text-align:center;border:1px solid var(--br)">
   <div style="font-size:.8rem;color:var(--l)">小点位 · 60单/天</div>
   <table style="font-size:.78rem;margin:8px 0 0">
-  <tr><th style="background:none;padding:2px 6px"></th><th style="background:none;padding:2px 6px">Phase 1</th><th style="background:none;padding:2px 6px">Phase 2</th><th style="background:none;padding:2px 6px">Phase 3</th></tr>
+  <tr><th style="background:none;padding:2px 6px"></th><th style="background:none;padding:2px 6px">Phase 1</th><th style="background:none;padding:2px 6px">Phase 2</th></tr>
   <tr><td style="text-align:left">月净利</td>
     <td style="color:var(--g);font-weight:700">¥+3,260</td>
-    <td style="color:var(--r);font-weight:700">-¥775</td>
-    <td style="color:var(--r);font-weight:700">-¥1,000</td></tr>
+    <td style="color:var(--r);font-weight:700">-¥775</td></tr>
   <tr><td style="text-align:left">你得分</td>
     <td style="color:var(--g);font-weight:700">¥+1,630</td>
-    <td style="color:var(--r);font-weight:700">-¥388</td>
-    <td style="color:var(--r);font-weight:700">-¥500</td></tr>
+    <td style="color:var(--r);font-weight:700">-¥388</td></tr>
   <tr><td style="text-align:left">单均</td>
-    <td>+1.04</td><td>-0.86</td><td>-1.11</td></tr>
+    <td>+1.04</td><td>-0.86</td></tr>
   <tr><td style="text-align:left">排班</td>
-    <td style="font-size:.72rem">2人</td><td style="font-size:.72rem">1人</td><td style="font-size:.72rem">1人</td></tr>
+    <td style="font-size:.72rem">2人</td><td style="font-size:.72rem">1人</td></tr>
   </table></div><div style="background:var(--bg);border-radius:8px;padding:14px 16px;text-align:center;border:1px solid var(--br)">
   <div style="font-size:.8rem;color:var(--l)">中等点位 · 150单/天</div>
   <table style="font-size:.78rem;margin:8px 0 0">
-  <tr><th style="background:none;padding:2px 6px"></th><th style="background:none;padding:2px 6px">Phase 1</th><th style="background:none;padding:2px 6px">Phase 2</th><th style="background:none;padding:2px 6px">Phase 3</th></tr>
+  <tr><th style="background:none;padding:2px 6px"></th><th style="background:none;padding:2px 6px">Phase 1</th><th style="background:none;padding:2px 6px">Phase 2</th></tr>
   <tr><td style="text-align:left">月净利</td>
     <td style="color:var(--g);font-weight:700">¥+13,250</td>
-    <td style="color:var(--g);font-weight:700">¥+395</td>
-    <td style="color:var(--r);font-weight:700">-¥160</td></tr>
+    <td style="color:var(--g);font-weight:700">¥+395</td></tr>
   <tr><td style="text-align:left">你得分</td>
     <td style="color:var(--g);font-weight:700">¥+6,625</td>
-    <td style="color:var(--g);font-weight:700">¥+198</td>
-    <td style="color:var(--r);font-weight:700">-¥80</td></tr>
+    <td style="color:var(--g);font-weight:700">¥+198</td></tr>
   <tr><td style="text-align:left">单均</td>
-    <td>+1.70</td><td>+0.18</td><td>-0.07</td></tr>
+    <td>+1.70</td><td>+0.18</td></tr>
   <tr><td style="text-align:left">排班</td>
-    <td style="font-size:.72rem">5人</td><td style="font-size:.72rem">2人</td><td style="font-size:.72rem">2人</td></tr>
+    <td style="font-size:.72rem">5人</td><td style="font-size:.72rem">2人</td></tr>
   </table></div><div style="background:var(--bg);border-radius:8px;padding:14px 16px;text-align:center;border:1px solid var(--br)">
   <div style="font-size:.8rem;color:var(--l)">大点位 · 200单/天</div>
   <table style="font-size:.78rem;margin:8px 0 0">
-  <tr><th style="background:none;padding:2px 6px"></th><th style="background:none;padding:2px 6px">Phase 1</th><th style="background:none;padding:2px 6px">Phase 2</th><th style="background:none;padding:2px 6px">Phase 3</th></tr>
+  <tr><th style="background:none;padding:2px 6px"></th><th style="background:none;padding:2px 6px">Phase 1</th><th style="background:none;padding:2px 6px">Phase 2</th></tr>
   <tr><td style="text-align:left">月净利</td>
     <td style="color:var(--g);font-weight:700">¥+14,165</td>
-    <td style="color:var(--g);font-weight:700">¥+4,550</td>
-    <td style="color:var(--g);font-weight:700">¥+1,400</td></tr>
+    <td style="color:var(--g);font-weight:700">¥+4,550</td></tr>
   <tr><td style="text-align:left">你得分</td>
     <td style="color:var(--g);font-weight:700">¥+7,082</td>
-    <td style="color:var(--g);font-weight:700">¥+2,275</td>
-    <td style="color:var(--g);font-weight:700">¥+700</td></tr>
+    <td style="color:var(--g);font-weight:700">¥+2,275</td></tr>
   <tr><td style="text-align:left">单均</td>
-    <td>+1.36</td><td>+1.52</td><td>+0.47</td></tr>
+    <td>+1.36</td><td>+1.52</td></tr>
   <tr><td style="text-align:left">排班</td>
-    <td style="font-size:.72rem">5人</td><td style="font-size:.72rem">2人</td><td style="font-size:.72rem">2人</td></tr>
+    <td style="font-size:.72rem">5人</td><td style="font-size:.72rem">2人</td></tr>
   </table></div><div style="background:var(--bg);border-radius:8px;padding:14px 16px;text-align:center;border:1px solid var(--br)">
   <div style="font-size:.8rem;color:var(--l)">超大点位 · 300单/天</div>
   <table style="font-size:.78rem;margin:8px 0 0">
-  <tr><th style="background:none;padding:2px 6px"></th><th style="background:none;padding:2px 6px">Phase 1</th><th style="background:none;padding:2px 6px">Phase 2</th><th style="background:none;padding:2px 6px">Phase 3</th></tr>
+  <tr><th style="background:none;padding:2px 6px"></th><th style="background:none;padding:2px 6px">Phase 1</th><th style="background:none;padding:2px 6px">Phase 2</th></tr>
   <tr><td style="text-align:left">月净利</td>
     <td style="color:var(--g);font-weight:700">¥+25,700</td>
-    <td style="color:var(--g);font-weight:700">¥+8,525</td>
-    <td style="color:var(--g);font-weight:700">¥+2,600</td></tr>
+    <td style="color:var(--g);font-weight:700">¥+8,525</td></tr>
   <tr><td style="text-align:left">你得分</td>
     <td style="color:var(--g);font-weight:700">¥+12,850</td>
-    <td style="color:var(--g);font-weight:700">¥+4,262</td>
-    <td style="color:var(--g);font-weight:700">¥+1,300</td></tr>
+    <td style="color:var(--g);font-weight:700">¥+4,262</td></tr>
   <tr><td style="text-align:left">单均</td>
-    <td>+1.65</td><td>+1.89</td><td>+0.58</td></tr>
+    <td>+1.65</td><td>+1.89</td></tr>
   <tr><td style="text-align:left">排班</td>
-    <td style="font-size:.72rem">9人</td><td style="font-size:.72rem">3人</td><td style="font-size:.72rem">3人</td></tr>
+    <td style="font-size:.72rem">9人</td><td style="font-size:.72rem">3人</td></tr>
   </table></div>
 </div>
 
@@ -164,11 +155,9 @@
 <tr>
   <th rowspan="2">日均<br>单量</th>
   <th colspan="9" class="p1">Phase 1 · 引流期（前2周）</th>
-  <th colspan="9" class="p2">Phase 2 · 长期补贴</th>
-  <th colspan="9" class="p3">Phase 3 · 补贴归零</th>
+  <th colspan="9" class="p2">Phase 2 · 常规期（长期）</th>
 </tr>
 <tr>
-  <th>实际</th><th>排班</th><th>人</th><th>人均</th><th>月净利</th><th style="color:#a5d6a7">你得分</th><th>单均</th><th>利率</th><th>补贴</th>
   <th>实际</th><th>排班</th><th>人</th><th>人均</th><th>月净利</th><th style="color:#a5d6a7">你得分</th><th>单均</th><th>利率</th><th>补贴</th>
   <th>实际</th><th>排班</th><th>人</th><th>人均</th><th>月净利</th><th style="color:#a5d6a7">你得分</th><th>单均</th><th>利率</th><th>补贴</th>
 </tr>
@@ -189,13 +178,6 @@
 <td>-7.08</td>
 <td style="color:var(--r)">-314.8%</td>
 <td>❌</td>
-
-<td>5</td><td>3h×1人 + 2h×0人</td><td>1</td><td>5.0</td>
-<td style="font-weight:700;color:var(--r)">-¥2,200</td>
-<td style="font-weight:700;color:var(--r)">-¥1,100</td>
-<td>-7.33</td>
-<td style="color:var(--r)">-366.7%</td>
-<td>—</td>
 </tr><tr class="l">
 <td>30</td>
 <td>26</td><td>3h×1人 + 2h×0人</td><td>1</td><td>26.0</td>
@@ -211,13 +193,6 @@
 <td>-4.42</td>
 <td style="color:var(--r)">-196.3%</td>
 <td>❌</td>
-
-<td>7</td><td>3h×1人 + 2h×0人</td><td>1</td><td>7.0</td>
-<td style="font-weight:700;color:var(--r)">-¥1,960</td>
-<td style="font-weight:700;color:var(--r)">-¥980</td>
-<td>-4.67</td>
-<td style="color:var(--r)">-233.3%</td>
-<td>—</td>
 </tr><tr class="g">
 <td>40</td>
 <td>34</td><td>3h×1人 + 2h×0人</td><td>1</td><td>34.0</td>
@@ -233,13 +208,6 @@
 <td>-2.42</td>
 <td style="color:var(--r)">-107.4%</td>
 <td>❌</td>
-
-<td>10</td><td>3h×1人 + 2h×0人</td><td>1</td><td>10.0</td>
-<td style="font-weight:700;color:var(--r)">-¥1,600</td>
-<td style="font-weight:700;color:var(--r)">-¥800</td>
-<td>-2.67</td>
-<td style="color:var(--r)">-133.3%</td>
-<td>—</td>
 </tr><tr class="g">
 <td>50</td>
 <td>43</td><td>3h×1人 + 2h×1人</td><td>2</td><td>21.5</td>
@@ -255,13 +223,6 @@
 <td>-1.64</td>
 <td style="color:var(--r)">-72.8%</td>
 <td>❌</td>
-
-<td>12</td><td>3h×1人 + 2h×0人</td><td>1</td><td>12.0</td>
-<td style="font-weight:700;color:var(--r)">-¥1,360</td>
-<td style="font-weight:700;color:var(--r)">-¥680</td>
-<td>-1.89</td>
-<td style="color:var(--r)">-94.4%</td>
-<td>—</td>
 </tr><tr class="g">
 <td>60</td>
 <td>52</td><td>3h×1人 + 2h×1人</td><td>2</td><td>26.0</td>
@@ -277,13 +238,6 @@
 <td>-0.86</td>
 <td style="color:var(--r)">-38.3%</td>
 <td>❌</td>
-
-<td>15</td><td>3h×1人 + 2h×0人</td><td>1</td><td>15.0</td>
-<td style="font-weight:700;color:var(--r)">-¥1,000</td>
-<td style="font-weight:700;color:var(--r)">-¥500</td>
-<td>-1.11</td>
-<td style="color:var(--r)">-55.6%</td>
-<td>—</td>
 </tr><tr class="g">
 <td>70</td>
 <td>60</td><td>3h×1人 + 2h×1人</td><td>2</td><td>30.0</td>
@@ -299,13 +253,6 @@
 <td>-0.50</td>
 <td style="color:var(--r)">-22.0%</td>
 <td>❌</td>
-
-<td>17</td><td>3h×1人 + 2h×0人</td><td>1</td><td>17.0</td>
-<td style="font-weight:700;color:var(--r)">-¥760</td>
-<td style="font-weight:700;color:var(--r)">-¥380</td>
-<td>-0.75</td>
-<td style="color:var(--r)">-37.3%</td>
-<td>—</td>
 </tr><tr class="g">
 <td>80</td>
 <td>69</td><td>3h×1人 + 3h×1人</td><td>2</td><td>34.5</td>
@@ -321,13 +268,6 @@
 <td>-0.08</td>
 <td style="color:var(--r)">-3.7%</td>
 <td>✅</td>
-
-<td>20</td><td>3h×1人 + 2h×0人</td><td>1</td><td>20.0</td>
-<td style="font-weight:700;color:var(--r)">-¥400</td>
-<td style="font-weight:700;color:var(--r)">-¥200</td>
-<td>-0.33</td>
-<td style="color:var(--r)">-16.7%</td>
-<td>—</td>
 </tr><tr class="g">
 <td>90</td>
 <td>78</td><td>3h×1人 + 2h×2人</td><td>3</td><td>26.0</td>
@@ -343,13 +283,6 @@
 <td>+0.13</td>
 <td style="color:var(--g)">+5.7%</td>
 <td>✅</td>
-
-<td>22</td><td>3h×1人 + 2h×0人</td><td>1</td><td>22.0</td>
-<td style="font-weight:700;color:var(--r)">-¥160</td>
-<td style="font-weight:700;color:var(--r)">-¥80</td>
-<td>-0.12</td>
-<td style="color:var(--r)">-6.1%</td>
-<td>—</td>
 </tr><tr class="g">
 <td>100</td>
 <td>86</td><td>3h×1人 + 2.5h×2人</td><td>3</td><td>28.7</td>
@@ -365,13 +298,6 @@
 <td>+0.38</td>
 <td style="color:var(--g)">+17.0%</td>
 <td>✅</td>
-
-<td>25</td><td>3h×1人 + 2h×0人</td><td>1</td><td>25.0</td>
-<td style="font-weight:700;color:var(--g)">¥+200</td>
-<td style="font-weight:700;color:var(--g)">¥+100</td>
-<td>+0.13</td>
-<td style="color:var(--g)">+6.7%</td>
-<td>—</td>
 </tr><tr class="g">
 <td>120</td>
 <td>104</td><td>3h×1人 + 3h×2人</td><td>3</td><td>34.7</td>
@@ -387,13 +313,6 @@
 <td>+0.69</td>
 <td style="color:var(--g)">+30.9%</td>
 <td>✅</td>
-
-<td>30</td><td>3h×1人 + 2h×0人</td><td>1</td><td>30.0</td>
-<td style="font-weight:700;color:var(--g)">¥+800</td>
-<td style="font-weight:700;color:var(--g)">¥+400</td>
-<td>+0.44</td>
-<td style="color:var(--g)">+22.2%</td>
-<td>—</td>
 </tr><tr class="g">
 <td>150</td>
 <td>130</td><td>3h×1人 + 2h×4人</td><td>5</td><td>26.0</td>
@@ -409,13 +328,6 @@
 <td>+0.18</td>
 <td style="color:var(--g)">+7.9%</td>
 <td>❌</td>
-
-<td>37</td><td>3h×1人 + 2h×1人</td><td>2</td><td>18.5</td>
-<td style="font-weight:700;color:var(--r)">-¥160</td>
-<td style="font-weight:700;color:var(--r)">-¥80</td>
-<td>-0.07</td>
-<td style="color:var(--r)">-3.6%</td>
-<td>—</td>
 </tr><tr class="g">
 <td>180</td>
 <td>156</td><td>3h×1人 + 2.5h×4人</td><td>5</td><td>31.2</td>
@@ -431,13 +343,6 @@
 <td>+1.44</td>
 <td style="color:var(--g)">+45.7%</td>
 <td>✅</td>
-
-<td>45</td><td>3h×1人 + 2h×1人</td><td>2</td><td>22.5</td>
-<td style="font-weight:700;color:var(--g)">¥+800</td>
-<td style="font-weight:700;color:var(--g)">¥+400</td>
-<td>+0.30</td>
-<td style="color:var(--g)">+14.8%</td>
-<td>—</td>
 </tr><tr class="g">
 <td>200</td>
 <td>173</td><td>3h×1人 + 3h×4人</td><td>5</td><td>34.6</td>
@@ -453,13 +358,6 @@
 <td>+1.52</td>
 <td style="color:var(--g)">+49.7%</td>
 <td>✅</td>
-
-<td>50</td><td>3h×1人 + 2h×1人</td><td>2</td><td>25.0</td>
-<td style="font-weight:700;color:var(--g)">¥+1,400</td>
-<td style="font-weight:700;color:var(--g)">¥+700</td>
-<td>+0.47</td>
-<td style="color:var(--g)">+23.3%</td>
-<td>—</td>
 </tr><tr class="g">
 <td>250</td>
 <td>216</td><td>3h×1人 + 3h×5人</td><td>6</td><td>36.0</td>
@@ -475,13 +373,6 @@
 <td>+1.54</td>
 <td style="color:var(--g)">+53.1%</td>
 <td>✅</td>
-
-<td>62</td><td>3h×1人 + 2.5h×1人</td><td>2</td><td>31.0</td>
-<td style="font-weight:700;color:var(--g)">¥+2,390</td>
-<td style="font-weight:700;color:var(--g)">¥+1,195</td>
-<td>+0.64</td>
-<td style="color:var(--g)">+32.1%</td>
-<td>—</td>
 </tr><tr class="g">
 <td>300</td>
 <td>260</td><td>3h×1人 + 2.5h×8人</td><td>9</td><td>28.9</td>
@@ -497,13 +388,6 @@
 <td>+1.89</td>
 <td style="color:var(--g)">+57.1%</td>
 <td>✅</td>
-
-<td>75</td><td>3h×1人 + 2h×2人</td><td>3</td><td>25.0</td>
-<td style="font-weight:700;color:var(--g)">¥+2,600</td>
-<td style="font-weight:700;color:var(--g)">¥+1,300</td>
-<td>+0.58</td>
-<td style="color:var(--g)">+28.9%</td>
-<td>—</td>
 </tr><tr class="g">
 <td>400</td>
 <td>346</td><td>3h×1人 + 2h×13人</td><td>14</td><td>24.7</td>
@@ -519,13 +403,6 @@
 <td>+1.68</td>
 <td style="color:var(--g)">+55.2%</td>
 <td>✅</td>
-
-<td>100</td><td>3h×1人 + 3h×2人</td><td>3</td><td>33.3</td>
-<td style="font-weight:700;color:var(--g)">¥+3,800</td>
-<td style="font-weight:700;color:var(--g)">¥+1,900</td>
-<td>+0.63</td>
-<td style="color:var(--g)">+31.7%</td>
-<td>—</td>
 </tr><tr class="g">
 <td>500</td>
 <td>433</td><td>3h×1人 + 2.5h×14人</td><td>15</td><td>28.9</td>
@@ -541,13 +418,6 @@
 <td>+1.94</td>
 <td style="color:var(--g)">+60.3%</td>
 <td>✅</td>
-
-<td>125</td><td>3h×1人 + 2.5h×3人</td><td>4</td><td>31.2</td>
-<td style="font-weight:700;color:var(--g)">¥+5,450</td>
-<td style="font-weight:700;color:var(--g)">¥+2,725</td>
-<td>+0.73</td>
-<td style="color:var(--g)">+36.3%</td>
-<td>—</td>
 </tr>
 </tbody>
 </table>
@@ -557,15 +427,11 @@
 <h2>🔍 你需要知道的</h2>
 
 <div class="note g">
-  <strong>✅ Phase 1（前2周）是唯一甜区：</strong>盈亏平衡仅需 40 单/天。100 单/天你月得 ¥+3,265，200 单/天月得 ¥+7,082，单均 +1.36 元。单量越高，单均利润越高（规模效应）。
+  <strong>✅ Phase 1（前2周）是甜区：</strong>盈亏平衡仅需 40 单/天。5 单/天你月得 ¥+1,630，100 单/天月得 ¥+3,265，200 单/天月得 ¥+7,082（单均 +1.36 元）。单量越高，单均利润越高（规模效应）。
 </div>
 
 <div class="note y">
-  <strong>⚠️ Phase 2 是生死关：</strong>骑手费涨到 ¥2.00 后，单量暴跌至 13-25%。盈亏平衡需 90 单/天（实际仅 22 单）。200 单点位你月得从 ¥+7,082 降至 ¥+2,275，降幅 68%。<strong>Phase 1 冲不到 200 单的点位，Phase 2 你几乎没有收入。</strong>
-</div>
-
-<div class="note r">
-  <strong>❌ Phase 3 归零后全线亏损：</strong>美团补贴取消、人头补贴归零后，任何体量都亏损。500 单/天你月得也仅 ¥+2,725。这是行业性风险，非你我所能控制。届时需协商转型或关停。
+  <strong>⚠️ Phase 2 单量断崖：</strong>骑手费从 ¥1.00 涨到 ¥2.00 后，单量暴跌至 13-25%。盈亏平衡需 90 单/天（实际仅 22 单）。200 单点位你月得从 ¥+7,082 降至 ¥+2,275，降幅 68%。<strong>Phase 1 冲不到 200 单的点位，Phase 2 几乎没有利润。</strong>
 </div>
 
 <div class="note b">

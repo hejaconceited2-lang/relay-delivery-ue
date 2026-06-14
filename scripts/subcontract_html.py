@@ -24,8 +24,7 @@ SPLIT = 0.5  # 五五分润
 
 PHASES = {
     "Phase1": {"rider_fee": 1.0, "settlement": 2.5, "subsidy": True,  "label": "Phase 1 · 引流期",   "duration": "前2周"},
-    "Phase2": {"rider_fee": 2.0, "settlement": 2.5, "subsidy": True,  "label": "Phase 2 · 长期补贴", "duration": "长期"},
-    "Phase3": {"rider_fee": 2.0, "settlement": 2.0, "subsidy": False, "label": "Phase 3 · 补贴归零", "duration": "未来"},
+    "Phase2": {"rider_fee": 2.0, "settlement": 2.5, "subsidy": True,  "label": "Phase 2 · 常规期",   "duration": "长期"},
 }
 
 VOLUMES = [20, 30, 40, 50, 60, 70, 80, 90, 100, 120, 150, 180, 200, 250, 300, 400, 500]
@@ -123,7 +122,6 @@ def build_main_table():
     for i, orders in enumerate(VOLUMES):
         d1 = TABLE["Phase1"][i]
         d2 = TABLE["Phase2"][i]
-        d3 = TABLE["Phase3"][i]
 
         # 行颜色以 Phase 1 为准（最乐观）
         m1 = d1["monthly_margin"]
@@ -131,7 +129,6 @@ def build_main_table():
 
         color1 = "var(--g)" if d1["monthly_profit"] >= 0 else "var(--r)"
         color2 = "var(--g)" if d2["monthly_profit"] >= 0 else "var(--r)"
-        color3 = "var(--g)" if d3["monthly_profit"] >= 0 else "var(--r)"
 
         rows += f"""<tr class="{cls}">
 <td>{orders}</td>
@@ -148,13 +145,6 @@ def build_main_table():
 <td>{d2['per_order_op']:+.2f}</td>
 <td style="color:{color2}">{d2['monthly_margin']:+.1f}%</td>
 <td>{'✅' if d2['subsidy_ok'] else '❌'}</td>
-
-<td>{d3['actual']}</td><td>{d3['cfg']}</td><td>{d3['tp']}</td><td>{d3['opp']}</td>
-<td style="font-weight:700;color:{color3}">{fm(d3['monthly_profit'])}</td>
-<td style="font-weight:700;color:{color3}">{fm(d3['operator_share'])}</td>
-<td>{d3['per_order_op']:+.2f}</td>
-<td style="color:{color3}">{d3['monthly_margin']:+.1f}%</td>
-<td>—</td>
 </tr>"""
     return rows
 
@@ -172,23 +162,20 @@ def build_scenario_cards():
         i = VOLUMES.index(orders)
         d1 = TABLE["Phase1"][i]
         d2 = TABLE["Phase2"][i]
-        d3 = TABLE["Phase3"][i]
         cards += f"""<div style="background:var(--bg);border-radius:8px;padding:14px 16px;text-align:center;border:1px solid var(--br)">
   <div style="font-size:.8rem;color:var(--l)">{label} · {orders}单/天</div>
   <table style="font-size:.78rem;margin:8px 0 0">
-  <tr><th style="background:none;padding:2px 6px"></th><th style="background:none;padding:2px 6px">Phase 1</th><th style="background:none;padding:2px 6px">Phase 2</th><th style="background:none;padding:2px 6px">Phase 3</th></tr>
+  <tr><th style="background:none;padding:2px 6px"></th><th style="background:none;padding:2px 6px">Phase 1</th><th style="background:none;padding:2px 6px">Phase 2</th></tr>
   <tr><td style="text-align:left">月净利</td>
     <td style="color:{'var(--g)' if d1['monthly_profit']>=0 else 'var(--r)'};font-weight:700">{fm(d1['monthly_profit'])}</td>
-    <td style="color:{'var(--g)' if d2['monthly_profit']>=0 else 'var(--r)'};font-weight:700">{fm(d2['monthly_profit'])}</td>
-    <td style="color:{'var(--g)' if d3['monthly_profit']>=0 else 'var(--r)'};font-weight:700">{fm(d3['monthly_profit'])}</td></tr>
+    <td style="color:{'var(--g)' if d2['monthly_profit']>=0 else 'var(--r)'};font-weight:700">{fm(d2['monthly_profit'])}</td></tr>
   <tr><td style="text-align:left">你得分</td>
     <td style="color:var(--g);font-weight:700">{fm(d1['operator_share'])}</td>
-    <td style="color:{'var(--g)' if d2['operator_share']>=0 else 'var(--r)'};font-weight:700">{fm(d2['operator_share'])}</td>
-    <td style="color:{'var(--g)' if d3['operator_share']>=0 else 'var(--r)'};font-weight:700">{fm(d3['operator_share'])}</td></tr>
+    <td style="color:{'var(--g)' if d2['operator_share']>=0 else 'var(--r)'};font-weight:700">{fm(d2['operator_share'])}</td></tr>
   <tr><td style="text-align:left">单均</td>
-    <td>{d1['per_order_op']:+.2f}</td><td>{d2['per_order_op']:+.2f}</td><td>{d3['per_order_op']:+.2f}</td></tr>
+    <td>{d1['per_order_op']:+.2f}</td><td>{d2['per_order_op']:+.2f}</td></tr>
   <tr><td style="text-align:left">排班</td>
-    <td style="font-size:.72rem">{d1['tp']}人</td><td style="font-size:.72rem">{d2['tp']}人</td><td style="font-size:.72rem">{d3['tp']}人</td></tr>
+    <td style="font-size:.72rem">{d1['tp']}人</td><td style="font-size:.72rem">{d2['tp']}人</td></tr>
   </table></div>"""
     return cards
 
@@ -202,6 +189,8 @@ def build_html():
     be2_idx = next(i for i, o in enumerate(VOLUMES) if TABLE["Phase2"][i]["monthly_profit"] >= 0)
     d200_p1 = TABLE["Phase1"][VOLUMES.index(200)]
     d200_p2 = TABLE["Phase2"][VOLUMES.index(200)]
+    d100_p1 = TABLE["Phase1"][VOLUMES.index(100)]
+    d60_p1 = TABLE["Phase1"][VOLUMES.index(60)]
     drop_200 = (1 - d200_p2["operator_share"] / d200_p1["operator_share"]) * 100 if d200_p1["operator_share"] > 0 else 100
 
     html = f'''<!DOCTYPE html>
@@ -285,8 +274,7 @@ def build_html():
   <thead><tr><th>阶段</th><th>时长</th><th>骑手付费</th><th>美团结算</th><th>人头补贴</th><th>单量变化</th></tr></thead>
   <tbody>
   <tr class="g"><td>Phase 1 · 引流期</td><td>前2周</td><td>¥1.00</td><td>¥2.50</td><td>(T−1)×¥80 ✅</td><td>95-100% 基准</td></tr>
-  <tr class="t"><td>Phase 2 · 长期补贴</td><td>长期</td><td>¥2.00</td><td>¥2.50</td><td>(T−1)×¥80 ✅</td><td>13-25% 基准</td></tr>
-  <tr class="l"><td>Phase 3 · 补贴归零</td><td>未来</td><td>¥2.00</td><td>¥2.00</td><td>❌ 取消</td><td>13-25% 基准</td></tr>
+  <tr class="t"><td>Phase 2 · 常规期</td><td>长期</td><td>¥2.00</td><td>¥2.50</td><td>(T−1)×¥80 ✅</td><td>13-25% 基准</td></tr>
   </tbody></table>
   <div style="font-size:.78rem;color:var(--l);margin-top:6px">* 补贴条件：营业≥3h 且人均≥20单。人头补贴公式: (总人数−1)×¥80/天。产能基准: 12单/h/人。</div>
 </div>
@@ -306,11 +294,9 @@ def build_html():
 <tr>
   <th rowspan="2">日均<br>单量</th>
   <th colspan="9" class="p1">Phase 1 · 引流期（前2周）</th>
-  <th colspan="9" class="p2">Phase 2 · 长期补贴</th>
-  <th colspan="9" class="p3">Phase 3 · 补贴归零</th>
+  <th colspan="9" class="p2">Phase 2 · 常规期（长期）</th>
 </tr>
 <tr>
-  <th>实际</th><th>排班</th><th>人</th><th>人均</th><th>月净利</th><th style="color:#a5d6a7">你得分</th><th>单均</th><th>利率</th><th>补贴</th>
   <th>实际</th><th>排班</th><th>人</th><th>人均</th><th>月净利</th><th style="color:#a5d6a7">你得分</th><th>单均</th><th>利率</th><th>补贴</th>
   <th>实际</th><th>排班</th><th>人</th><th>人均</th><th>月净利</th><th style="color:#a5d6a7">你得分</th><th>单均</th><th>利率</th><th>补贴</th>
 </tr>
@@ -325,15 +311,11 @@ def build_html():
 <h2>🔍 你需要知道的</h2>
 
 <div class="note g">
-  <strong>✅ Phase 1（前2周）是唯一甜区：</strong>盈亏平衡仅需 {VOLUMES[be1_idx]} 单/天。100 单/天你月得 {fm(TABLE['Phase1'][VOLUMES.index(100)]['operator_share'])}，200 单/天月得 {fm(d200_p1['operator_share'])}，单均 {d200_p1['per_order_op']:+.2f} 元。单量越高，单均利润越高（规模效应）。
+  <strong>✅ Phase 1（前2周）是甜区：</strong>盈亏平衡仅需 {VOLUMES[be1_idx]} 单/天。{VOLUMES.index(60)+1} 单/天你月得 {fm(d60_p1['operator_share'])}，100 单/天月得 {fm(d100_p1['operator_share'])}，200 单/天月得 {fm(d200_p1['operator_share'])}（单均 {d200_p1['per_order_op']:+.2f} 元）。单量越高，单均利润越高（规模效应）。
 </div>
 
 <div class="note y">
-  <strong>⚠️ Phase 2 是生死关：</strong>骑手费涨到 ¥2.00 后，单量暴跌至 13-25%。盈亏平衡需 {VOLUMES[be2_idx]} 单/天（实际仅 {TABLE['Phase2'][be2_idx]['actual']} 单）。200 单点位你月得从 {fm(d200_p1['operator_share'])} 降至 {fm(d200_p2['operator_share'])}，降幅 {drop_200:.0f}%。<strong>Phase 1 冲不到 200 单的点位，Phase 2 你几乎没有收入。</strong>
-</div>
-
-<div class="note r">
-  <strong>❌ Phase 3 归零后全线亏损：</strong>美团补贴取消、人头补贴归零后，任何体量都亏损。500 单/天你月得也仅 {fm(TABLE['Phase3'][-1]['operator_share'])}。这是行业性风险，非你我所能控制。届时需协商转型或关停。
+  <strong>⚠️ Phase 2 单量断崖：</strong>骑手费从 ¥1.00 涨到 ¥2.00 后，单量暴跌至 13-25%。盈亏平衡需 {VOLUMES[be2_idx]} 单/天（实际仅 {TABLE['Phase2'][be2_idx]['actual']} 单）。200 单点位你月得从 {fm(d200_p1['operator_share'])} 降至 {fm(d200_p2['operator_share'])}，降幅 {drop_200:.0f}%。<strong>Phase 1 冲不到 200 单的点位，Phase 2 几乎没有利润。</strong>
 </div>
 
 <div class="note b">
