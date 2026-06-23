@@ -3,6 +3,7 @@
 ===============================
 公开页面，认领点位 + 踩点指标评估。
 Firebase Realtime Database 后端。
+分两批次：第一批（已有8个）+ 第二批（新增点位，含美团午高峰预估数据）
 """
 
 import os
@@ -22,7 +23,7 @@ def build_html():
 <style>
   :root{--g:#27ae60;--gb:#d5f5e3;--b:#2980b9;--bb:#d4e6f1;--r:#e74c3c;--rb:#fadbd8;--y:#f39c12;--yb:#fef9e7;--t:#2c3e50;--l:#7f8c8d;--br:#e0e0e0;--bg:#fafafa}
   *{margin:0;padding:0;box-sizing:border-box}
-  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei",sans-serif;color:var(--t);background:#fff;max-width:1060px;margin:0 auto;padding:28px 32px;line-height:1.65}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei",sans-serif;color:var(--t);background:#fff;max-width:1200px;margin:0 auto;padding:28px 32px;line-height:1.65}
   h1{font-size:1.6rem;font-weight:800;margin-bottom:2px}
   h1 .sub{font-size:.78rem;color:var(--l);font-weight:400;margin-left:8px}
   hr{border:none;border-top:2px solid #eee;margin:14px 0}
@@ -31,21 +32,29 @@ def build_html():
   .stat{display:flex;align-items:center;gap:6px}
   .dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
 
-  table{width:100%;border-collapse:collapse;font-size:.84rem;margin:10px 0}
-  thead th{background:#2c3e50;color:#fff;padding:9px 8px;font-weight:600;text-align:center;white-space:nowrap}
+  table{width:100%;border-collapse:collapse;font-size:.82rem;margin:10px 0}
+  thead th{background:#2c3e50;color:#fff;padding:9px 6px;font-weight:600;text-align:center;white-space:nowrap;position:sticky;top:0;z-index:10}
   thead th:first-child{border-radius:8px 0 0 0} thead th:last-child{border-radius:0 8px 0 0}
-  tbody td{padding:9px 8px;text-align:center;border-bottom:1px solid var(--br);transition:background .15s}
+  tbody td{padding:8px 6px;text-align:center;border-bottom:1px solid var(--br);transition:background .15s}
   tbody tr.main-row{cursor:pointer}
   tbody tr.main-row:hover{background:var(--bb)!important}
   tbody tr.taken-row{background:#fafafa;cursor:pointer}
   tbody tr.taken-row:hover{background:#f0f0f0!important}
   tbody tr.expanded td{padding:0}
 
-  .badge{display:inline-block;border-radius:12px;padding:3px 10px;font-size:.74rem;font-weight:700}
+  /* 批次标题行 */
+  tbody tr.batch-header{cursor:pointer;background:#f5f7fa;border-bottom:2px solid var(--b)}
+  tbody tr.batch-header:hover{background:#e8ecf3}
+  tbody tr.batch-header td{padding:10px 8px;font-weight:700;font-size:.88rem;color:var(--b);text-align:left}
+  tbody tr.batch-header .batch-arrow{display:inline-block;transition:transform .2s;margin-right:6px}
+  tbody tr.batch-header .batch-arrow.open{transform:rotate(90deg)}
+  tbody tr.batch-hidden{display:none}
+
+  .badge{display:inline-block;border-radius:12px;padding:3px 10px;font-size:.72rem;font-weight:700}
   .badge.go{background:var(--gb);color:#1e8449}
   .badge.tk{background:var(--rb);color:#922b21}
 
-  .assess{display:inline-block;border-radius:12px;padding:4px 12px;font-size:.78rem;font-weight:700}
+  .assess{display:inline-block;border-radius:12px;padding:4px 10px;font-size:.76rem;font-weight:700}
   .assess.green{background:var(--gb);color:#1e8449}
   .assess.yellow{background:var(--yb);color:#b7950b}
   .assess.red{background:var(--rb);color:#922b21}
@@ -53,6 +62,8 @@ def build_html():
 
   .arrow-expand{display:inline-block;transition:transform .2s;font-size:.7rem;margin-right:2px}
   .arrow-expand.open{transform:rotate(90deg)}
+
+  .locker-warn{color:var(--r);font-size:.7rem;font-weight:700}
 
   /* 详情面板 */
   .detail-panel{padding:16px 20px}
@@ -106,11 +117,17 @@ def build_html():
   .modal .err{color:var(--r);font-size:.8rem;margin-top:6px;display:none}
 
   .footer{margin-top:32px;padding-top:12px;border-top:2px solid #eee;color:var(--l);font-size:.72rem}
+
+  @media(max-width:800px){
+    body{padding:12px 8px}
+    table{font-size:.74rem}
+    thead th, tbody td{padding:6px 3px}
+  }
 </style>
 </head>
 <body>
 
-<h1>📍 接力送 · 点位认领与评估<span class="sub">外卖柜一票否决 · 其余指标决定难度 · 都要做</span></h1>
+<h1>📍 接力送 · 点位认领与评估<span class="sub">外卖柜一票否决 · 其余指标决定难度 · 第一批已开点 / 第二批待踩点</span></h1>
 <hr>
 
 <div class="status-bar" id="statusBar">
@@ -126,7 +143,7 @@ def build_html():
 
 <table id="table" style="display:none">
 <thead><tr>
-  <th style="width:30px"></th><th>序号</th><th>点位名称</th><th>区域</th><th>评估结果</th><th>认领状态</th><th>认领人</th>
+  <th style="width:28px"></th><th>序号</th><th>点位名称</th><th>区域</th><th>街道</th><th>类型</th><th>午高峰预估</th><th>评估结果</th><th>认领状态</th><th>认领人</th>
 </tr></thead>
 <tbody id="tbody"></tbody>
 </table>
@@ -180,18 +197,55 @@ def build_html():
   const db = getDatabase(app);
   const pointsRef = ref(db, "points");
 
-  const POINTS = [
-    ["p01", "珠江国际纺织城",     "海珠区"],
-    ["p02", "中大附属第六医院",    "天河区"],
-    ["p03", "中大附属第三医院",    "天河区"],
-    ["p04", "中大附三岭南医院",    "黄埔区"],
-    ["p05", "云升科学园",         "黄埔区"],
-    ["p06", "丰兴广场",           "天河区"],
-    ["p07", "万达广场萝岗点",     "黄埔区"],
-    ["p08", "荔胜广场",           "荔湾区"],
+  // ═══════ 点位数据 ═══════
+  // [id, name, district, street, type, peakOrders, lockerNote]
+  // peakOrders: 美团预估午高峰单量 (null=暂无数据)
+  // lockerNote: null | "可能有外卖柜"
+  const BATCH1 = [
+    ["p01", "珠江国际纺织城",     "海珠区", "凤阳街道",  "商场/购物广场", null,   null],
+    ["p02", "中大附属第六医院",    "天河区", "员村街道",  "医院",          null,   null],
+    ["p03", "中大附属第三医院",    "天河区", "石牌街道",  "医院",          640,    null],
+    ["p04", "中大附三岭南医院",    "黄埔区", "联和街道",  "医院",          null,   null],
+    ["p05", "云升科学园",         "黄埔区", "联和街道",  "写字楼/园区",   null,   null],
+    ["p06", "丰兴广场",           "天河区", "天河南街道","商住综合体",     433.4,  null],
+    ["p07", "万达广场(萝岗店)",   "黄埔区", "联和街道",  "商场/购物广场", 289.4,  null],
+    ["p08", "荔胜广场",           "荔湾区", "东漖街道",  "商场/购物广场", 277.2,  null],
   ];
 
-  // 评估项定义: key, 标签, 选项[{value, label, css}, ...]
+  const BATCH2 = [
+    ["p09", "中山大学附属第一医院",           "越秀区", "农林街道",  "医院",          1314,  "可能有外卖柜"],
+    ["p10", "广东省人民医院",                  "越秀区", "大东街道",  "医院",          1261,  "可能有外卖柜"],
+    ["p11", "广州市妇女儿童医疗中心增城院区",  "增城区", "荔湖街",    "医院",          838,   "可能有外卖柜"],
+    ["p12", "孙逸仙纪念医院南院区",            "海珠区", "瑞宝街道",  "医院",          286.4, "可能有外卖柜"],
+    ["p13", "广州医科大学附属第二医院",        "海珠区", "昌岗街道",  "医院",          798,   "可能有外卖柜"],
+    ["p14", "广州市妇女儿童医疗中心珠江新城院区","天河区","冼村街道",  "医院",          781,   "可能有外卖柜"],
+    ["p15", "广东省第二人民医院",              "海珠区", "赤岗街道",  "医院",          246,   null],
+    ["p16", "广东省妇幼保健院番禺分院",        "番禺区", "南村镇",    "医院",          272,   null],
+    ["p17", "中山大学附属仁济医院",            "花都区", "新雅街道",  "医院",          196.4, null],
+    ["p18", "高盛大厦",                       "天河区", "天河南街道","写字楼/园区",   369.2, null],
+    ["p19", "中华国际中心",                    "越秀区", "大东街道",  "写字楼/园区",   365.8, null],
+    ["p20", "广州金马服装交易城",              "天河区", "沙河街道",  "商场/购物广场", 362,   null],
+    ["p21", "时代E-PARK",                     "天河区", "新塘街道",  "写字楼/园区",   263.2, null],
+    ["p22", "珠江钢琴创梦园",                  "荔湾区", "中南街道",  "写字楼/园区",   224.6, null],
+    ["p23", "时代广场",                       "天河区", "天河南街道","商场/购物广场", 204.4, null],
+    ["p24", "云创国际",                       "白云区", "鹤龙街道",  "写字楼/园区",   202,   null],
+    ["p25", "生生广场",                       "黄埔区", "萝岗街道",  "写字楼/园区",   199.6, null],
+    ["p26", "越秀星汇海珠湾C区",              "海珠区", "南石头街道","住宅小区",      362,   null],
+    ["p27", "增城永荟广场",                    "增城区", "宁西街道",  "写字楼/园区",   195.6, null],
+    ["p28", "广州交易广场",                    "越秀区", "六榕街道",  "写字楼/园区",   194.8, null],
+    ["p29", "名商天地皮料五金龙头市场",        "越秀区", "矿泉街道",  "市场",          184.8, null],
+    ["p30", "锐丰中心",                       "黄埔区", "萝岗街道",  "写字楼/园区",   174.2, null],
+    ["p31", "广州市番禺中心医院",              "番禺区", "桥南街道",  "医院",          245,   null],
+    ["p32", "番禺区中医院",                    "番禺区", "市桥街道",  "医院",          168,   null],
+    ["p33", "广州市老年病康复医院",            "黄埔区", "联和街道",  "医院",          73,    null],
+  ];
+
+  const ALL_BATCHES = [{ label: "第一批 · 已开点运营中", points: BATCH1 }, { label: "第二批 · 待踩点评估", points: BATCH2 }];
+  const ALL_POINTS = [...BATCH1, ...BATCH2];
+  const POINT_MAP = {};
+  ALL_POINTS.forEach(p => { POINT_MAP[p[0]] = p; });
+
+  // 评估项定义
   const CRITERIA = [
     { key: "locker", label: "外卖柜", icon: "📦", opts: [
       { v: "无", label: "无外卖柜", css: "sel-go" },
@@ -214,6 +268,7 @@ def build_html():
   let currentData = {};
   let expandedId = null;
   let selectedPointId = null;
+  let batchOpen = { batch1: true, batch2: true };
 
   function countFilled(scouting) {
     if (!scouting) return 0;
@@ -224,9 +279,7 @@ def build_html():
 
   function assess(scouting) {
     if (!scouting || countFilled(scouting) === 0) return { level: "gray", text: "未踩点", cls: "gray", detail: "尚未评估" };
-    // 外卖柜 = 有 → 唯一一票否决
     if (scouting.locker === "有") return { level: "red", text: "🔴 不可行", cls: "red", detail: "有外卖柜，骑手直接放柜，业务不成立" };
-    // 计算有利因素数量（路线集中/物业宽松/有遮挡）
     let good = 0;
     if (scouting.rider_route === "集中") good++;
     if (scouting.property === "宽松") good++;
@@ -238,13 +291,23 @@ def build_html():
     return { level: "yellow", text: "🟡 较高难度", cls: "yellow", detail: "3项不利，需重点攻坚" };
   }
 
+  function formatPeak(n) {
+    if (n === null || n === undefined) return '<span style="color:var(--l)">—</span>';
+    return `<strong>${n}</strong> 单/天`;
+  }
+
+  function formatLockerNote(note) {
+    if (!note) return "";
+    return ` <span class="locker-warn" title="需实地踩点确认">⚠${note}</span>`;
+  }
+
   async function initPoints() {
     const snap = await get(pointsRef);
     const emptyScout = {};
     CRITERIA.forEach(cr => { emptyScout[cr.key] = null; });
     if (!snap.exists()) {
       const init = {};
-      POINTS.forEach(([id]) => {
+      ALL_POINTS.forEach(([id]) => {
         init[id] = { claimed: false, name: "", timestamp: 0, scouting: { ...emptyScout } };
       });
       init.p01 = { claimed: true, name: "赵金荣", timestamp: Date.now(), scouting: { ...emptyScout } };
@@ -252,7 +315,7 @@ def build_html():
     } else {
       const data = snap.val();
       const updates = {};
-      POINTS.forEach(([id]) => {
+      ALL_POINTS.forEach(([id]) => {
         if (!data[id]) {
           updates[id] = { claimed: false, name: "", timestamp: 0, scouting: { ...emptyScout } };
         } else {
@@ -273,6 +336,63 @@ def build_html():
     }
   }
 
+  function renderRow(id, name, district, street, type, peakOrders, lockerNote, i, data) {
+    const entry = data[id] || {};
+    const claimed = entry.claimed === true;
+    const claimer = entry.name || "";
+    const sc = entry.scouting || {};
+    const as = assess(sc);
+    const filled = countFilled(sc);
+    const isExpanded = (expandedId === id);
+
+    let stats = { claimed: claimed, filled: filled, level: as.level };
+
+    let html = `<tr class="${claimed ? 'taken-row' : 'main-row'}" onclick="window.toggleExpand('${id}')" id="row-${id}">
+      <td><span class="arrow-expand${isExpanded ? ' open' : ''}" id="arrow-${id}">▶</span></td>
+      <td>${i}</td>
+      <td style="text-align:left;font-weight:700">${name}${formatLockerNote(lockerNote)}</td>
+      <td>${district}</td>
+      <td style="font-size:.78rem;color:var(--l)">${street || '—'}</td>
+      <td style="font-size:.8rem">${type || '—'}</td>
+      <td>${formatPeak(peakOrders)}</td>
+      <td><span class="assess ${as.cls}">${as.text}</span></td>
+      <td>${claimed ? '<span class="badge tk">已认领</span>' : '<span class="badge go">可认领</span>'}</td>
+      <td style="${claimed ? 'font-weight:700;cursor:pointer;text-decoration:underline;text-decoration-style:dotted' : 'color:var(--l)'}"
+          onclick="${claimed ? `event.stopPropagation();window.editName('${id}','${claimer.replace(/'/g, "\\'")}')` : ''}"
+          title="${claimed ? '点击修改名字' : ''}">${claimed ? claimer : '—'}</td>
+    </tr>`;
+
+    if (isExpanded) {
+      html += `<tr class="expanded" id="detail-${id}"><td colspan="10"><div class="detail-panel">`;
+      // 评估指标
+      html += `<div class="criteria-grid">`;
+      CRITERIA.forEach(cr => {
+        const val = sc[cr.key];
+        html += `<div class="criterion">
+          <span class="c-label">${cr.icon} ${cr.label}</span>
+          <span class="c-opts">`;
+        cr.opts.forEach(opt => {
+          const sel = (val === opt.v) ? ` sel ${opt.css}` : "";
+          html += `<span class="c-opt${sel}" onclick="event.stopPropagation();window.setScout('${id}','${cr.key}','${opt.v}')">${opt.label}</span>`;
+        });
+        html += `</span></div>`;
+      });
+      html += `</div>`;
+      // 判定结果 + 认领按钮
+      html += `<div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">`;
+      html += `<div class="assess-summary ${as.level === 'green' ? 'go' : (as.level === 'yellow' ? 'warn' : (as.level === 'red' ? 'bad' : 'na'))}" style="flex:1;margin:0">
+        <span class="verdict">${as.text}</span>
+        <span class="detail">${as.detail}</span>
+      </div>`;
+      if (!claimed) {
+        html += `<button onclick="event.stopPropagation();window.openClaimModal('${id}','${name}')" style="padding:8px 20px;background:var(--g);color:#fff;border:none;border-radius:8px;font-size:.84rem;font-weight:700;cursor:pointer;white-space:nowrap">✋ 认领此点位</button>`;
+      }
+      html += `</div>`;
+      html += `</div></td></tr>`;
+    }
+    return { html, stats };
+  }
+
   function renderTable(snapshot) {
     const data = snapshot?.val() || {};
     currentData = data;
@@ -280,66 +400,38 @@ def build_html():
     let html = "";
     let avail = 0, taken = 0, cntGo = 0, cntMaybe = 0, cntNo = 0;
 
-    POINTS.forEach(([id, name, district], i) => {
-      const entry = data[id] || {};
-      const claimed = entry.claimed === true;
-      const claimer = entry.name || "";
-      const sc = entry.scouting || {};
-      const as = assess(sc);
-      const filled = countFilled(sc);
-      const isExpanded = (expandedId === id);
+    ALL_BATCHES.forEach((batch, bi) => {
+      const batchKey = `batch${bi + 1}`;
+      const open = batchOpen[batchKey] !== false;
+      const batchCount = batch.points.length;
+      const batchClaimed = batch.points.filter(([id]) => (data[id] || {}).claimed === true).length;
+      const batchAvail = batchCount - batchClaimed;
 
-      if (claimed) taken++; else avail++;
-      if (filled > 0) {
-        if (as.level === "green") cntGo++;
-        else if (as.level === "yellow") cntMaybe++;
-        else if (as.level === "red") cntNo++;
-      }
-
-      html += `<tr class="${claimed ? 'taken-row' : 'main-row'}" onclick="window.toggleExpand('${id}')" id="row-${id}">
-        <td><span class="arrow-expand${isExpanded ? ' open' : ''}" id="arrow-${id}">▶</span></td>
-        <td>${i + 1}</td>
-        <td style="text-align:left;font-weight:700">${name}</td>
-        <td>${district}</td>
-        <td><span class="assess ${as.cls}">${as.text}</span></td>
-        <td>${claimed ? '<span class="badge tk">已认领</span>' : '<span class="badge go">可认领</span>'}</td>
-        <td style="${claimed ? 'font-weight:700;cursor:pointer;text-decoration:underline;text-decoration-style:dotted' : 'color:var(--l)'}"
-            onclick="${claimed ? `event.stopPropagation();window.editName('${id}','${claimer.replace(/'/g, "\\'")}')` : ''}"
-            title="${claimed ? '点击修改名字' : ''}">${claimed ? claimer : '—'}</td>
+      html += `<tr class="batch-header" onclick="window.toggleBatch('${batchKey}')">
+        <td><span class="batch-arrow${open ? ' open' : ''}" id="batch-arrow-${batchKey}">▶</span></td>
+        <td colspan="9">${batch.label} <span style="font-weight:400;font-size:.78rem;color:var(--l)">（${batchCount}个点位，已占${batchClaimed}，可选${batchAvail}）</span></td>
       </tr>`;
 
-      if (isExpanded) {
-        html += `<tr class="expanded" id="detail-${id}"><td colspan="7"><div class="detail-panel">`;
-        // 评估指标
-        html += `<div class="criteria-grid">`;
-        CRITERIA.forEach(cr => {
-          const val = sc[cr.key];
-          html += `<div class="criterion">
-            <span class="c-label">${cr.icon} ${cr.label}</span>
-            <span class="c-opts">`;
-          cr.opts.forEach(opt => {
-            const sel = (val === opt.v) ? ` sel ${opt.css}` : "";
-            html += `<span class="c-opt${sel}" onclick="event.stopPropagation();window.setScout('${id}','${cr.key}','${opt.v}')">${opt.label}</span>`;
-          });
-          html += `</span></div>`;
-        });
-        html += `</div>`;
-        // 判定结果 + 认领按钮
-        html += `<div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">`;
-        html += `<div class="assess-summary ${as.level === 'green' ? 'go' : (as.level === 'yellow' ? 'warn' : (as.level === 'red' ? 'bad' : 'na'))}" style="flex:1;margin:0">
-          <span class="verdict">${as.text}</span>
-          <span class="detail">${as.detail}</span>
-        </div>`;
-        if (!claimed) {
-          html += `<button onclick="event.stopPropagation();window.openClaimModal('${id}','${name}')" style="padding:8px 20px;background:var(--g);color:#fff;border:none;border-radius:8px;font-size:.84rem;font-weight:700;cursor:pointer;white-space:nowrap">✋ 认领此点位</button>`;
+      batch.points.forEach(([id, name, district, street, type, peakOrders, lockerNote], i) => {
+        const globalIdx = bi === 0 ? i + 1 : BATCH1.length + i + 1;
+        const result = renderRow(id, name, district, street, type, peakOrders, lockerNote, globalIdx, data);
+        if (open) {
+          html += result.html;
+        } else {
+          // Still need tracking, wrap in hidden rows
+          html += `<tr class="batch-hidden" id="hidden-${id}">${result.html.replace(/<tr /g, '<tr style="display:none" ')}</tr>`;
         }
-        html += `</div>`;
-        html += `</div></td></tr>`;
-      }
+        if (result.stats.claimed) taken++; else avail++;
+        if (result.stats.filled > 0) {
+          if (result.stats.level === "green") cntGo++;
+          else if (result.stats.level === "yellow") cntMaybe++;
+          else if (result.stats.level === "red") cntNo++;
+        }
+      });
     });
 
     document.getElementById("tbody").innerHTML = html;
-    document.getElementById("cntTotal").textContent = POINTS.length;
+    document.getElementById("cntTotal").textContent = ALL_POINTS.length;
     document.getElementById("cntAvail").textContent = avail;
     document.getElementById("cntTaken").textContent = taken;
     document.getElementById("cntGo").textContent = cntGo;
@@ -351,6 +443,12 @@ def build_html():
 
   window.toggleExpand = function(id) {
     expandedId = (expandedId === id) ? null : id;
+    renderTable({ val: () => currentData });
+  };
+
+  window.toggleBatch = function(batchKey) {
+    batchOpen[batchKey] = !batchOpen[batchKey];
+    expandedId = null;
     renderTable({ val: () => currentData });
   };
 
