@@ -417,10 +417,8 @@ def build_html():
         const result = renderRow(id, name, district, street, type, peakOrders, lockerNote, globalIdx, data);
         if (open) {
           html += result.html;
-        } else {
-          // Still need tracking, wrap in hidden rows
-          html += `<tr class="batch-hidden" id="hidden-${id}">${result.html.replace(/<tr /g, '<tr style="display:none" ')}</tr>`;
         }
+        // stats always counted regardless of visibility
         if (result.stats.claimed) taken++; else avail++;
         if (result.stats.filled > 0) {
           if (result.stats.level === "green") cntGo++;
