@@ -111,7 +111,7 @@
 </head>
 <body>
 
-<h1>📍 接力送 · 点位认领与评估<span class="sub">外卖柜一票否决 · 其余指标决定难度 · 第一批已开点 / 第二批待踩点</span></h1>
+<h1>📍 接力送 · 点位认领与评估<span class="sub">外卖柜/禁止上楼 一票否决 · 其余指标决定难度 · 第一批已开点 / 第二批待踩点</span></h1>
 <hr>
 
 <div class="status-bar" id="statusBar">
@@ -137,7 +137,7 @@
   <div class="tips" id="tips">
     <h3>🗓 从评估到开点</h3>
     <div class="tip-grid">
-      <div class="tip-item"><span class="ico">🔍</span><span><strong>① 踩点评估</strong><br><small>外卖柜（有一票否决）→ 骑手路线/物业态度/摆放空间（决定难度高低，都要做）</small></span></div>
+      <div class="tip-item"><span class="ico">🔍</span><span><strong>① 踩点评估</strong><br><small>外卖柜/上楼（有一票否决）→ 骑手路线/物业态度/摆放空间（决定难度高低，都要做）</small></span></div>
       <div class="tip-item"><span class="ico">🪪</span><span><strong>② 提交人员信息</strong><br><small>开点前一天提供：身份证 + 电话 + 名字</small></span></div>
       <div class="tip-item"><span class="ico">🔥</span><span><strong>③ 美团火炬认证</strong><br><small>开点前一天 24:00 前完成，否则无法使用</small></span></div>
       <div class="tip-item"><span class="ico">🪧</span><span><strong>④ 物料准备</strong><br><small>KT板（严物业小号）+ 放餐篮 + 马甲</small></span></div>
@@ -247,6 +247,10 @@
       { v: "有遮挡", label: "遮阳挡雨", css: "sel-go" },
       { v: "露天", label: "露天", css: "sel-warn" }
     ]},
+    { key: "upstairs", label: "上楼", icon: "🛗", opts: [
+      { v: "允许", label: "允许上楼", css: "sel-go" },
+      { v: "禁止", label: "禁止上楼/门禁", css: "sel-bad" }
+    ]},
   ];
 
   let currentData = {};
@@ -264,12 +268,13 @@
   function assess(scouting) {
     if (!scouting || countFilled(scouting) === 0) return { level: "gray", text: "未踩点", cls: "gray", detail: "尚未评估" };
     if (scouting.locker === "有") return { level: "red", text: "🔴 不可行", cls: "red", detail: "有外卖柜，骑手直接放柜，业务不成立" };
+    if (scouting.upstairs === "禁止") return { level: "red", text: "🔴 不可行", cls: "red", detail: "禁止上楼或楼下门禁不可过，点位不成立" };
     let good = 0;
     if (scouting.rider_route === "集中") good++;
     if (scouting.property === "宽松") good++;
     if (scouting.shelter === "有遮挡") good++;
     const filled = countFilled(scouting);
-    if (filled < 4) return { level: "gray", text: "待完善", cls: "gray", detail: `已填${filled}/4项，还差${4-filled}项` };
+    if (filled < 5) return { level: "gray", text: "待完善", cls: "gray", detail: `已填${filled}/5项，还差${5-filled}项` };
     if (good >= 2) return { level: "green", text: "🟢 低难度", cls: "green", detail: `${good}/3项有利，条件较好` };
     if (good === 1) return { level: "yellow", text: "🟡 中等难度", cls: "yellow", detail: "仅1项有利，运营需多投入" };
     return { level: "yellow", text: "🟡 较高难度", cls: "yellow", detail: "3项不利，需重点攻坚" };
