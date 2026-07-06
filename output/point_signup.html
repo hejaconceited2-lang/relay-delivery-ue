@@ -164,7 +164,7 @@
 <!-- ═══════ Firebase SDK ═══════ -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
-  import { getDatabase, ref, get, set, update, onValue } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-database.js";
+  import { getDatabase, ref, get, set, update, onValue, runTransaction } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-database.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyA0BVosjdj5SQQIRW_n4BPPUy21dZJW8EI",
@@ -487,10 +487,16 @@
   };
 
   window.setScout = async function(id, key, value) {
-    try {
-      await set(ref(db, `points/${id}/scouting/${key}`), value);
-    } catch (e) {
-      alert("更新失败: " + e.message);
+    const path = `points/${id}/scouting/${key}`;
+    let retries = 2;
+    while (retries >= 0) {
+      try {
+        await set(ref(db, path), value);
+        return;
+      } catch (e) {
+        if (retries === 0) alert("更新失败: " + e.message);
+        retries--;
+      }
     }
   };
 
@@ -526,22 +532,25 @@
     document.getElementById("modalBtn").disabled = true;
     document.getElementById("modalBtn").textContent = "提交中…";
 
-    const snap = await get(ref(db, "points/" + selectedPointId));
-    if (snap.exists() && snap.val().claimed === true) {
-      document.getElementById("modalErr").style.display = "block";
-      document.getElementById("modalBtn").disabled = false;
-      document.getElementById("modalBtn").textContent = "确认认领";
-      return;
-    }
-
     try {
-      const existing = snap.val() || {};
-      const emptyScout = {};
-      CRITERIA.forEach(cr => { emptyScout[cr.key] = (existing.scouting && existing.scouting[cr.key]) || null; });
-      await set(ref(db, "points/" + selectedPointId), {
-        claimed: true, name: name, timestamp: Date.now(), scouting: emptyScout
+      const result = await runTransaction(ref(db, "points/" + selectedPointId), (current) => {
+        if (current && current.claimed === true) {
+          return; // 返回 undefined 中止事务，已被他人认领
+        }
+        const existing = current || {};
+        const emptyScout = {};
+        CRITERIA.forEach(cr => { emptyScout[cr.key] = (existing.scouting && existing.scouting[cr.key]) || null; });
+        return { claimed: true, name: name, timestamp: Date.now(), scouting: emptyScout };
       });
-      closeModal();
+
+      if (result.committed) {
+        closeModal();
+      } else {
+        // 事务被中止（他人抢先认领）
+        document.getElementById("modalErr").style.display = "block";
+        document.getElementById("modalBtn").disabled = false;
+        document.getElementById("modalBtn").textContent = "确认认领";
+      }
     } catch (e) {
       alert("提交失败: " + e.message);
       document.getElementById("modalBtn").disabled = false;
