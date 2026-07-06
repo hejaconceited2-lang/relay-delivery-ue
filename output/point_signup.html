@@ -357,6 +357,12 @@
         updates["p01/name"] = "赵金荣";
         updates["p01/timestamp"] = Date.now();
       }
+      // 广日物流 预设为陈家瑞已认领（仅首次初始化时生效）
+      if (!data.p65) {
+        updates["p65/claimed"] = true;
+        updates["p65/name"] = "陈家瑞";
+        updates["p65/timestamp"] = Date.now();
+      }
       if (Object.keys(updates).length > 0) await update(ref(db, "points"), updates);
     }
   }
