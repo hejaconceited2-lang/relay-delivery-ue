@@ -358,7 +358,7 @@
         updates["p01/name"] = "赵金荣";
         updates["p01/timestamp"] = Date.now();
       }
-      // 广日物流 首次创建或强制修正为陈家瑞
+      // 广日物流 p65 → 陈家瑞；清洗重编号漂移的脏数据
       if (!data.p65 || !data.p65.claimed || data.p65.name !== "陈家瑞") {
         if (!data.p65) {
           updates["p65"] = { claimed: true, name: "陈家瑞", timestamp: Date.now(), scouting: { ...emptyScout } };
@@ -368,6 +368,14 @@
           updates["p65/timestamp"] = Date.now();
         }
       }
+      // 清理重编号漂移：这些点位被旧 p65 污染，强制重置为无人认领
+      ["p66","p67","p68","p69","p70","p71","p72","p73","p74","p75"].forEach(pid => {
+        if (data[pid] && data[pid].claimed && data[pid].name === "陈家瑞") {
+          updates[`${pid}/claimed`] = false;
+          updates[`${pid}/name`] = "";
+          updates[`${pid}/timestamp`] = 0;
+        }
+      });
       if (Object.keys(updates).length > 0) await update(ref(db, "points"), updates);
     }
   }
